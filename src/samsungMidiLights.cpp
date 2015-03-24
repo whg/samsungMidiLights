@@ -7,9 +7,12 @@ void samsungMidiLights::setup() {
     
 //	ofSetVerticalSync(true);
 	ofBackground(0);
+    
+    showGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 	
     model.load("/Users/whg/Desktop/o2.obj");
+    model.scale(5);
 	
 	midiIn.openPort("midiOne Bus 1");	// by name
 	
@@ -26,24 +29,34 @@ void samsungMidiLights::setup() {
     stringstream ss;
     for (int i = 1; i <= 4; i++) {
         for (int j = 1; j <= 4; j++) {
+            
             ss.str("");
             ss << char('a' + (i-1));
             ss << j;
+            
             int midiNote = 36 + ((i-1)*4) + (j-1);
-            padKeys[midiNote] = Pad(ss.str());
+            padKeys[midiNote] = Pad(ss.str(), midiNote, i-1, j-1);
+
+            pads.push_back(Pad(ss.str(), midiNote, j-1, i-1));
+
             cout << midiNote << ": " << ss.str() << endl;
 
-            midiPitches.insert(pair<string, padParam>(ss.str(), padParam(ss.str(), midiNote, 1, 100)));
+//            midiPitches.insert(pair<string, padParam>(ss.str(), padParam(ss.str(), midiNote, 1, 100)));
         }
     }
     
     
     parameters.setName("parameters");
-    for (map<string, padParam>::iterator it = midiPitches.begin(); it != midiPitches.end(); ++it) {
-        parameters.add(it->second);
-        cout << it->first << endl;
+    
+    for(int i = 0; i < pads.size(); i++) {
+        parameters.add(pads[i].midiPitch);
     }
-//    parameters.add(color.set("color",100,ofColor(0,0),255));
+    
+//    for (map<string, padParam>::iterator it = midiPitches.begin(); it != midiPitches.end(); ++it) {
+//        parameters.add(it->second);
+//        cout << it->first << endl;
+//    }
+
     gui.setup(parameters);
 
 }
@@ -104,24 +117,44 @@ void samsungMidiLights::draw() {
     
     ofxOBJGroup *g;
     
-    for (map<int, Pad>::iterator it =  padKeys.begin(); it != padKeys.end(); ++it) {
-        g = model.getGroup(it->second.name);
+    for (vector<Pad>::iterator it =  pads.begin(); it != pads.end(); ++it) {
+        Pad p = *it;
+        g = model.getGroup(p.name);
+//        cout << "name :"  << p.name << endl;
+
         if (g == NULL) {
             continue;
         }
-        if (it->second.on) {
+        if (p.on) {
             ofSetHexColor(0xffaabb);
         }
         else ofSetHexColor(0xffffff);
         g->draw();
+
     }
+
     
+//    for (map<int, Pad>::iterator it =  padKeys.begin(); it != padKeys.end(); ++it) {
+//        g = model.getGroup(it->second.name);
+//        if (g == NULL) {
+//            continue;
+//        }
+//        if (it->second.on) {
+//            ofSetHexColor(0xffaabb);
+//        }
+//        else ofSetHexColor(0xffffff);
+//        g->draw();
+//    }
+//    
     
     
     cam.end();
 
 
-    gui.draw();
+    if (showGui) {
+        gui.draw();
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -141,11 +174,24 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
     ss << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
     cout << ss.str() << endl;
     
-    if (msg.status == MIDI_NOTE_ON) {
-        padKeys[msg.pitch].on = true;
-    }
-    else if (msg.status == MIDI_NOTE_OFF) {
-        padKeys[msg.pitch].on = false;
+//    if (msg.status == MIDI_NOTE_ON) {
+//        padKeys[msg.pitch].on = true;
+//    }
+//    else if (msg.status == MIDI_NOTE_OFF) {
+//        padKeys[msg.pitch].on = false;
+//    }
+//
+
+    for (int i = 0; i < pads.size(); i++) {
+        Pad *p = &pads[i];
+        if (p->midiPitch == msg.pitch) {
+            if (msg.status == MIDI_NOTE_ON) {
+                p->on = true;
+            }
+            else if (msg.status == MIDI_NOTE_OFF) {
+                p->on = false;
+            }
+        }
     }
     
 }
@@ -157,6 +203,10 @@ void samsungMidiLights::keyPressed(int key) {
 		case 'l':
 			midiIn.listPorts();
 			break;
+            
+        case ' ':
+            showGui = !showGui;
+            break;
 	}
 }
 
@@ -178,4 +228,23 @@ void samsungMidiLights::mousePressed(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void samsungMidiLights::mouseReleased() {
+}
+
+void samsungMidiLights::drawMPC(ofEventArgs &args) {
+    
+    ofBackgroundHex(0x000000);
+    
+    ofTranslate(0, 200);
+    ofScale(1, -1);
+    
+    int d = 50;
+    for (int i = 0; i < pads.size(); i++) {
+        Pad p = pads[i];
+        
+        if (p.on) {
+            ofSetColor(255);
+        } else ofSetColor(0);
+        
+        ofDrawRectangle(p.pos.x * d, p.pos.y * d, d, d);
+    }
 }

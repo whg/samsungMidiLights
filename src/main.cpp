@@ -2,6 +2,7 @@
 #include "samsungMidiLights.h"
 #include "ofAppGLFWWindow.h"
 #include "LaunchPad.h"
+//#include "MPC.h"
 
 int main(){
 
@@ -37,6 +38,16 @@ int main(){
 //    shared_ptr<LaunchPad> launchPad2(new LaunchPad);
 
     ofAddListener(launchPad2Window->events().draw, &mainApp->lp2, &LaunchPad::draw);
+
+
+    settings.width = 200;
+    settings.height = 200;
+    settings.position.x = 0;
+    settings.position.y = 450;
+    settings.resizable = true;
+//    shared_ptr<MPC> mpc(new MPC);
+    shared_ptr<ofAppBaseWindow> mpcWindow = ofCreateWindow(settings);
+    ofAddListener(mpcWindow->events().draw, mainApp.get(), &samsungMidiLights::drawMPC);
 
 
     ofRunApp(mainWindow, mainApp);

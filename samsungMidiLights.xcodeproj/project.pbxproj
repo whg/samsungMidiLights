@@ -151,6 +151,7 @@
 		EE70412E1AC1AF85007DB59F /* ofxSliderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSliderGroup.h; sourceTree = "<group>"; };
 		EE70412F1AC1AF85007DB59F /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxToggle.cpp; sourceTree = "<group>"; };
 		EE7041301AC1AF85007DB59F /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxToggle.h; sourceTree = "<group>"; };
+		EE7041391AC1B574007DB59F /* MPC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPC.h; sourceTree = "<group>"; };
 		EEDED62F1AC073DD006C2DC8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EEDED6311AC073DD006C2DC8 /* ofxOBJFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxOBJFace.cpp; sourceTree = "<group>"; };
 		EEDED6321AC073DD006C2DC8 /* ofxOBJFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOBJFace.h; sourceTree = "<group>"; };
@@ -325,6 +326,7 @@
 				EE70411C1AC1A4D3007DB59F /* LaunchPad.h */,
 				00A1BFCBB38848AD0E0C8539 /* samsungMidiLights.cpp */,
 				2D129AB0F7D46B8DFCEADEDB /* samsungMidiLights.h */,
+				EE7041391AC1B574007DB59F /* MPC.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

@@ -12,13 +12,25 @@ typedef ofParameter<int> padParam;
 struct Pad {
     string name;
     bool on;
+    ofVec2f pos;
+    ofParameter<int> midiPitch;
+    
     Pad(): name(""), on(false) {}
-    Pad(string s): name(s), on(false) {}
+    
+    Pad(string s, int p, int x, int y):
+        name(s),
+        on(false),
+        pos(x, y),
+        midiPitch(s, p, 1, 100) {
+
+    }
 };
 
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
+    bool showGui;
+    
 public:
 	
 	void setup();
@@ -36,6 +48,8 @@ public:
 	
 	void newMidiMessage(ofxMidiMessage& eventArgs);
 	
+    
+    void drawMPC(ofEventArgs &args);
 	
 	ofxMidiIn midiIn;
 	ofxMidiMessage midiMessage;
@@ -43,6 +57,7 @@ public:
     
     ofEasyCam cam;
     map<int, Pad> padKeys;
+    vector<Pad> pads;
 
     ofxOBJModel model;
 
