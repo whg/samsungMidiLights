@@ -15,6 +15,7 @@ struct Pad {
     ofVec2f pos;
     ofParameter<int> midiPitch;
     
+    
     Pad(): name(""), on(false) {}
     
     Pad(string s, int p, int x, int y):
@@ -67,6 +68,9 @@ public:
     map<string, padParam> midiPitches;
     ofParameter<ofColor> color;
     ofxPanel gui;
+    
+    
+    vector<ofPixels*> pixelPerms;
 
 };
 

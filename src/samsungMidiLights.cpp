@@ -58,49 +58,102 @@ void samsungMidiLights::setup() {
 //    }
 
     gui.setup(parameters);
+    
+    
+    for (int i = 0; i < 16; i++) {
+        ofPixels *p = new ofPixels();
+        p->allocate(8, 8, 3);
+        ofColor c;
+        for (int j = 0; j < 8; j++) {
+            for (int k = 0; k < 8; k++) {
+                float r = ofRandom(8);
+                if (r > 7) c = ofColor::red;
+                else if (r > 6) c = ofColor::yellow;
+                else if (r > 5) c = ofColor::green;
+                else c = ofColor::black;
+                p->setColor(j, k, c);
+            }
+        }
+        pixelPerms.push_back(p);
+    }
+
 
 }
 
 float theta = 0;
 
+void samsungMidiLights::exit() {
+    for (int i = 0; i < pixelPerms.size(); i++) {
+        delete pixelPerms[i];
+    }
+    
+    // clean up
+    midiIn.closePort();
+    midiIn.removeListener(this);
+}
+
+
 //--------------------------------------------------------------
 void samsungMidiLights::update() {
 
-    lp1.begin();
-    ofClear(0, 255);
-    float r = ofMap(sin(ofGetElapsedTimef() * 4), -1, 1, 0, 6);
-    ofFill();
-    ofSetColor(ofColor::green);
-	ofDrawCircle(4, 4, r);
-	ofNoFill();
-	ofSetColor(ofColor::red);
-	ofDrawCircle(4, 4, r);
-    
-    lp1.end();
-    
-    
-    lp2.begin();
-    ofClear(0, 255);
-    ofSetColor(ofColor::red);
+//    lp1.begin();
+//    ofClear(0, 255);
+//    float r = ofMap(sin(ofGetElapsedTimef() * 4), -1, 1, 0, 6);
+//    ofFill();
+//    ofSetColor(ofColor::green);
+//	ofDrawCircle(4, 4, r);
+//	ofNoFill();
+//	ofSetColor(ofColor::red);
+//	ofDrawCircle(4, 4, r);
+//    
+//    lp1.end();
+//    
+//    
+//    lp2.begin();
+//    ofClear(0, 255);
+//    ofSetColor(ofColor::red);
+//
+//    float t = 0.1;
+//    ofPolyline l;
+//
+//    ofBeginShape();
+//    for (int i = 0; i < 9; i++) {
+//        l.addVertex(i, ofMap(sin(theta+i*mouseX/10.0), -1, 1, 0, 6));
+//
+//    }
+//    ofEndShape();
+////    theta+= t;
+//    ofSetColor(ofColor::red);
+//    ofSetLineWidth(1);
+//    l.draw();
+//    
+//    
+//    ofTranslate(0, 1);
+//    ofSetColor(ofColor::yellow);
+//    ofSetLineWidth(1);
+//    l.draw();
+//    
+//    ofTranslate(0, 1);
+//    ofSetColor(ofColor::green);
+//    ofSetLineWidth(2);
+//    l.draw();
+//    
+//    lp2.end();
 
-    float t = 0.1;
-    ofPolyline l;
-
-    ofBeginShape();
-    for (int i = 0; i < 9; i++) {
-        l.addVertex(i, ofMap(sin(theta+i*0.5), -1, 1, 0, 8));
-
+    static int pc = 0;
+    for (int i = 0; i < pads.size(); i++) {
+        if (pads[i].on) {
+            pc = i;
+            break;
+        }
     }
-    ofEndShape();
-    theta+= t;
-    ofSetLineWidth(3);
-    l.draw();
     
-    ofSetColor(ofColor::yellow);
-    ofSetLineWidth(1);
-    l.draw();
+    lp2.set(*pixelPerms[pc]);
     
-    lp2.end();
+    ofPixels opixels(*pixelPerms[pc]);
+    opixels.mirror(false, true);
+    lp1.set(opixels);
+    
 }
 
 //--------------------------------------------------------------
@@ -155,14 +208,6 @@ void samsungMidiLights::draw() {
         gui.draw();
     }
     
-}
-
-//--------------------------------------------------------------
-void samsungMidiLights::exit() {
-	
-	// clean up
-	midiIn.closePort();
-	midiIn.removeListener(this);
 }
 
 //--------------------------------------------------------------

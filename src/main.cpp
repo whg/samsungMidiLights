@@ -45,7 +45,6 @@ int main(){
     settings.position.x = 0;
     settings.position.y = 450;
     settings.resizable = true;
-//    shared_ptr<MPC> mpc(new MPC);
     shared_ptr<ofAppBaseWindow> mpcWindow = ofCreateWindow(settings);
     ofAddListener(mpcWindow->events().draw, mainApp.get(), &samsungMidiLights::drawMPC);
 
