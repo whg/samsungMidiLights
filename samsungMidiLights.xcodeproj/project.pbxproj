@@ -47,6 +47,7 @@
 		EE7041361AC1AF85007DB59F /* ofxSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE70412B1AC1AF85007DB59F /* ofxSlider.cpp */; };
 		EE7041371AC1AF85007DB59F /* ofxSliderGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE70412D1AC1AF85007DB59F /* ofxSliderGroup.cpp */; };
 		EE7041381AC1AF85007DB59F /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE70412F1AC1AF85007DB59F /* ofxToggle.cpp */; };
+		EE70413E1AC1E4F6007DB59F /* ofxDmx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE70413C1AC1E4F6007DB59F /* ofxDmx.cpp */; };
 		EEDED6371AC073DD006C2DC8 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = EEDED62F1AC073DD006C2DC8 /* README.md */; };
 		EEDED6381AC073DD006C2DC8 /* ofxOBJFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEDED6311AC073DD006C2DC8 /* ofxOBJFace.cpp */; };
 		EEDED6391AC073DD006C2DC8 /* ofxOBJGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EEDED6331AC073DD006C2DC8 /* ofxOBJGroup.cpp */; };
@@ -151,6 +152,8 @@
 		EE70412E1AC1AF85007DB59F /* ofxSliderGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxSliderGroup.h; sourceTree = "<group>"; };
 		EE70412F1AC1AF85007DB59F /* ofxToggle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxToggle.cpp; sourceTree = "<group>"; };
 		EE7041301AC1AF85007DB59F /* ofxToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxToggle.h; sourceTree = "<group>"; };
+		EE70413C1AC1E4F6007DB59F /* ofxDmx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxDmx.cpp; sourceTree = "<group>"; };
+		EE70413D1AC1E4F6007DB59F /* ofxDmx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxDmx.h; sourceTree = "<group>"; };
 		EEDED62F1AC073DD006C2DC8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EEDED6311AC073DD006C2DC8 /* ofxOBJFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxOBJFace.cpp; sourceTree = "<group>"; };
 		EEDED6321AC073DD006C2DC8 /* ofxOBJFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOBJFace.h; sourceTree = "<group>"; };
@@ -249,6 +252,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				EE70413F1AC1E4F9007DB59F /* ofxDmx */,
 				EE70411E1AC1AF85007DB59F /* ofxGui */,
 				EE70410F1AC1A4B4007DB59F /* ofxLaunchpad */,
 				EEDED62E1AC073DD006C2DC8 /* ofxOBJModel */,
@@ -394,6 +398,24 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		EE70413B1AC1E4F6007DB59F /* src */ = {
+			isa = PBXGroup;
+			children = (
+				EE70413C1AC1E4F6007DB59F /* ofxDmx.cpp */,
+				EE70413D1AC1E4F6007DB59F /* ofxDmx.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxDmx/src;
+			sourceTree = "<group>";
+		};
+		EE70413F1AC1E4F9007DB59F /* ofxDmx */ = {
+			isa = PBXGroup;
+			children = (
+				EE70413B1AC1E4F6007DB59F /* src */,
+			);
+			name = ofxDmx;
+			sourceTree = "<group>";
+		};
 		EEDED62E1AC073DD006C2DC8 /* ofxOBJModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -511,6 +533,7 @@
 				EE7041191AC1A4BE007DB59F /* ofxLaunchpadColor.cpp in Sources */,
 				EE7041181AC1A4BE007DB59F /* ofxLaunchpad.cpp in Sources */,
 				BCC8D420CBA9217E437D2D76 /* ofxRtMidiIn.cpp in Sources */,
+				EE70413E1AC1E4F6007DB59F /* ofxDmx.cpp in Sources */,
 				EE70411A1AC1A4BE007DB59F /* ofxLaunchpadToggle.cpp in Sources */,
 				EE70411D1AC1A4D3007DB59F /* LaunchPad.cpp in Sources */,
 				EE7041341AC1AF85007DB59F /* ofxLabel.cpp in Sources */,
