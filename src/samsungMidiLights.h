@@ -13,6 +13,7 @@ typedef ofParameter<int> padParam;
 struct Pad {
     string name;
     bool on;
+    float value;
     ofVec2f pos;
     ofParameter<int> midiPitch;
     
@@ -23,11 +24,19 @@ struct Pad {
         name(s),
         on(false),
         pos(x, y),
-        midiPitch(s, p, 1, 100) {
+        midiPitch(s, p, 1, 100),
+        value(0) {
 
     }
 };
 
+struct Sharpy : public Pad {
+    float value2;
+    Sharpy(string s, int p, int x, int y): Pad(s, p, x, y){
+        value = 0;
+        value2 = 0;
+    }
+};
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
@@ -62,6 +71,8 @@ public:
     ofEasyCam cam;
     map<int, Pad> padKeys;
     vector<Pad> pads;
+    
+    vector<Sharpy> sharpys;
 
     ofxOBJModel model;
 
