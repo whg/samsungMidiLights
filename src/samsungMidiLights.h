@@ -17,6 +17,14 @@ struct Pad {
     ofVec2f pos;
     ofParameter<int> midiPitch;
     
+    ofxPanel colourPanel;
+    ofParameterGroup paramGroup;
+    ofParameter<int> red;
+    ofParameter<int> green;
+    ofParameter<int> blue;
+
+
+
     
     Pad(): name(""), on(false) {}
     
@@ -27,6 +35,12 @@ struct Pad {
         midiPitch(s, p, 1, 100),
         value(0) {
 
+            paramGroup.setName(s);
+            paramGroup.add(red.set("red", 0, 0, 255));
+            paramGroup.add(green.set("blue", 0, 0, 255));
+            paramGroup.add(blue.set("green", 0, 0, 255));
+            colourPanel.setup(paramGroup);
+            
     }
 };
 

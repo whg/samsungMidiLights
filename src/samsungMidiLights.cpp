@@ -8,7 +8,7 @@
 //--------------------------------------------------------------
 void samsungMidiLights::setup() {
 
-    ofSetFrameRate(12);
+    ofSetFrameRate(25);
     
 //	ofSetVerticalSync(true);
 	ofBackground(60);
@@ -44,7 +44,7 @@ void samsungMidiLights::setup() {
 //            ss << j;
             
             int midiNote = 34 + k; //((i-1)*4) + (j-1);
-            padKeys[midiNote] = Pad(ss.str(), midiNote, i-1, j-1);
+//            padKeys[midiNote] = Pad(ss.str(), midiNote, i-1, j-1);
 
             pads.push_back(Pad(ss.str(), midiNote, j-1, i-1));
 
@@ -86,10 +86,10 @@ void samsungMidiLights::setup() {
         ofColor c;
         for (int j = 0; j < 8; j++) {
             for (int k = 0; k < 8; k++) {
-                float r = ofRandom(8);
-                if (r > 7) c = ofColor::red;
-                else if (r > 6) c = ofColor::yellow;
-                else if (r > 5) c = ofColor::green;
+                float r = ofRandom(5);
+                if (r > 4) c = ofColor::red;
+                else if (r > 3) c = ofColor::yellow;
+                else if (r > 2) c = ofColor::green;
                 else c = ofColor::black;
                 p->setColor(j, k, c);
             }
@@ -182,7 +182,7 @@ void samsungMidiLights::update() {
         }
     }
     
-//    lp2.set(*pixelPerms[pc]);
+    lp2.set(*pixelPerms[pc]);
     
     ofPixels opixels(*pixelPerms[pc]);
     opixels.mirror(false, true);
@@ -353,9 +353,14 @@ void samsungMidiLights::draw() {
         gui.draw();
     }
     
+
+    for (int i = 0; i < pads.size(); i++) {
+        pads[i].colourPanel.draw();
+    }
+
+
     dmx.update();
 
-    
 }
 
 //--------------------------------------------------------------
@@ -451,12 +456,12 @@ void samsungMidiLights::drawMPC(ofEventArgs &args) {
     
     int d = 50;
     for (int i = 0; i < pads.size(); i++) {
-        Pad p = pads[i];
+        Pad *p = &pads[i];
         
-        if (p.on) {
+        if (p->on) {
             ofSetColor(255);
         } else ofSetColor(0);
         
-        ofDrawRectangle(p.pos.x * d, p.pos.y * d, d, d);
+        ofDrawRectangle(p->pos.x * d, p->pos.y * d, d, d);
     }
 }
