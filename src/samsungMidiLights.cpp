@@ -3,15 +3,17 @@
 //--------------------------------------------------------------
 void samsungMidiLights::setup() {
 
-    ofSetFrameRate(30);
+    ofSetFrameRate(12);
     
 //	ofSetVerticalSync(true);
 	ofBackground(0);
     
+    dmx.connect("/dev/tty.usbserial-EN110089");
+    
     showGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-    model.load("/Users/whg/Desktop/o2.obj");
+    model.load("/Users/whg/Desktop/2015_03_25_FOR_SIMULATION_STRIPPED_edit.obj");
     model.scale(5);
 	
 	midiIn.openPort("midiOne Bus 1");	// by name
@@ -19,9 +21,7 @@ void samsungMidiLights::setup() {
 	// don't ignore sysex, timing, & active sense messages,
 	// these are ignored by default
 	midiIn.ignoreTypes(false, false, false);
-	
 	midiIn.addListener(this);
-	
 	midiIn.setVerbose(true);
 
 
@@ -78,6 +78,25 @@ void samsungMidiLights::setup() {
     }
 
 
+    cam.setupPerspective();
+    float f = cam.getFarClip();
+    float n = cam.getNearClip();
+    
+    cam.setTranslationKey('t');
+    
+//    cam.setOrientation(ofQuaternion(-0.706509172, 0.0908926799, -0.687438547, 0.141468167));
+
+//    cam.setPosition(945.860656, 392.853912, -92.8425445);
+//    cam.setPosition(182.467392, 259.548157, -108.678383);
+//    cam.setOrientation(ofQuaternion(-0.707637131, 0.0145274857, -0.706423163, 0.0087180743));
+    
+//    cam.setGlobalOrientation(ofQuaternion(-0.714855433, -0.00786958821, -0.703222095, 0.0272255018));
+//    cam.setGlobalPosition(606.578186, 544.768005, -99.3945159);
+
+    cam.setPosition(324.845123, 398.42157, -106.140259);
+    cam.setOrientation(ofQuaternion(-0.694695234, -0.122944221, -0.694024741, 0.14353995));
+//    cam.setPosition(606.578186, 544.768005, -99.3945159);
+//    cam.setPosition(606.578186, 544.768005, -99.3945159);
 }
 
 float theta = 0;
@@ -95,6 +114,9 @@ void samsungMidiLights::exit() {
 
 //--------------------------------------------------------------
 void samsungMidiLights::update() {
+    
+
+
 
 //    lp1.begin();
 //    ofClear(0, 255);
@@ -108,6 +130,7 @@ void samsungMidiLights::update() {
 //    
 //    lp1.end();
 //    
+//
 //    
 //    lp2.begin();
 //    ofClear(0, 255);
@@ -148,7 +171,7 @@ void samsungMidiLights::update() {
         }
     }
     
-    lp2.set(*pixelPerms[pc]);
+//    lp2.set(*pixelPerms[pc]);
     
     ofPixels opixels(*pixelPerms[pc]);
     opixels.mirror(false, true);
@@ -160,33 +183,57 @@ void samsungMidiLights::update() {
 void samsungMidiLights::draw() {
 	ofSetColor(0);
 	
+//
 
-    cam.begin();
     
+//    cam.setPosition(ofGetFrameNum(), 0, 0);
+
+
+    
+    cam.begin();
+
+    ofNoFill();
     ofSetHexColor(0xffffff);
-    model.draw();
+    
+//    glDisable(GL_CULL_FACE);
+    ofVec3f v = cam.getZAxis();
+    ofRotate(1.5, v.x, v.y, v.z);
+    ofScale(0.25, 0.25, 0.25);
+    model.draw(true);
     
     ofSetHexColor(0x000000);
     
-    ofxOBJGroup *g;
-    
-    for (vector<Pad>::iterator it =  pads.begin(); it != pads.end(); ++it) {
-        Pad p = *it;
-        g = model.getGroup(p.name);
-//        cout << "name :"  << p.name << endl;
-
-        if (g == NULL) {
-            continue;
-        }
-        if (p.on) {
-            ofSetHexColor(0xffaabb);
-        }
-        else ofSetHexColor(0xffffff);
-        g->draw();
-
-    }
-
-    
+//    ofxOBJGroup *g;
+//    
+//    for (vector<Pad>::iterator it =  pads.begin(); it != pads.end(); ++it) {
+//        Pad p = *it;
+//        g = model.getGroup(p.name);
+////        cout << "name :"  << p.name << endl;
+//
+//        if (g == NULL) {
+//            continue;
+//        }
+//        if (p.on) {
+//            ofSetHexColor(0xffaabb);
+//        }
+//        else ofSetHexColor(0xffffff);
+//        g->draw();
+//        
+//        
+//        if (it == pads.begin()) {
+//            
+//            dmx.setLevel(10, 125);
+//            dmx.setLevel(16, 255);
+//            dmx.setLevel(12, 125);
+//            
+//            dmx.setLevel(3, 60);
+//            dmx.setLevel(2, p.on ? 255 : 0);
+//
+//        }
+//
+//    }
+//
+//    
 //    for (map<int, Pad>::iterator it =  padKeys.begin(); it != padKeys.end(); ++it) {
 //        g = model.getGroup(it->second.name);
 //        if (g == NULL) {
@@ -207,6 +254,9 @@ void samsungMidiLights::draw() {
     if (showGui) {
         gui.draw();
     }
+    
+    dmx.update();
+
     
 }
 
@@ -252,7 +302,11 @@ void samsungMidiLights::keyPressed(int key) {
         case ' ':
             showGui = !showGui;
             break;
+        case 'a':
+            cout << cam.getOrientationQuat() << endl;
+            break;
 	}
+    
 }
 
 //--------------------------------------------------------------

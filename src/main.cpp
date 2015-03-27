@@ -8,9 +8,9 @@ int main(){
 
     ofGLFWWindowSettings settings;
     
-    settings.width = 600;
-    settings.height = 600;
-    settings.position.x = 300;
+    settings.width = 1100;
+    settings.height = 700;
+    settings.position.x = 270;
     settings.resizable = true;
     shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
 
@@ -31,13 +31,13 @@ int main(){
 
     ofAddListener(launchPad1Window->events().draw, &mainApp->lp1, &LaunchPad::draw);
 
-    settings.position.x = 1440-settings.width;
-    settings.position.y = 0;
-    settings.resizable = true;
-    shared_ptr<ofAppBaseWindow> launchPad2Window = ofCreateWindow(settings);
-//    shared_ptr<LaunchPad> launchPad2(new LaunchPad);
-
-    ofAddListener(launchPad2Window->events().draw, &mainApp->lp2, &LaunchPad::draw);
+//    settings.position.x = 1440-settings.width;
+//    settings.position.y = 0;
+//    settings.resizable = true;
+//    shared_ptr<ofAppBaseWindow> launchPad2Window = ofCreateWindow(settings);
+////    shared_ptr<LaunchPad> launchPad2(new LaunchPad);
+//
+//    ofAddListener(launchPad2Window->events().draw, &mainApp->lp2, &LaunchPad::draw);
 
 
     settings.width = 200;

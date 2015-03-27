@@ -4,6 +4,7 @@
 #include "ofxMidi.h"
 #include "ofxOBJModel.h"
 #include "ofxGui.h"
+#include "ofxDmx.h"
 
 #include "LaunchPad.h"
 
@@ -31,6 +32,8 @@ struct Pad {
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
     bool showGui;
+    
+    ofxDmx dmx;
     
 public:
 	
