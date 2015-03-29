@@ -18,4 +18,76 @@
 	<d2>49</d2>
 	<d3>50</d3>
 	<d4>51</d4>
+<panel9>
+		<colour>255, 249, 41, 255</colour>
+		<dmxChannel>108</dmxChannel>
+	</panel9>
+<panel10>
+		<colour>3, 218, 100, 255</colour>
+		<dmxChannel>109</dmxChannel>
+	</panel10>
+<panel8>
+		<colour>236, 100, 100, 255</colour>
+		<dmxChannel>107</dmxChannel>
+	</panel8>
+<panel7>
+		<colour>78, 255, 100, 255</colour>
+		<dmxChannel>106</dmxChannel>
+	</panel7>
+<panel1>
+		<colour>255, 15, 55, 255</colour>
+		<dmxChannel>100</dmxChannel>
+	</panel1>
+<panel2>
+		<colour>100, 218, 255, 255</colour>
+		<dmxChannel>101</dmxChannel>
+	</panel2>
+<panel3>
+		<colour>100, 138, 206, 255</colour>
+		<dmxChannel>102</dmxChannel>
+	</panel3>
+<panel4>
+		<colour>222, 20, 255, 255</colour>
+		<dmxChannel>103</dmxChannel>
+	</panel4>
+<panel5>
+		<colour>189, 253, 159, 255</colour>
+		<dmxChannel>104</dmxChannel>
+	</panel5>
+<panel6>
+		<colour>100, 255, 228, 255</colour>
+		<dmxChannel>105</dmxChannel>
+	</panel6>
+<panel12>
+		<colour>8, 100, 133, 255</colour>
+		<dmxChannel>111</dmxChannel>
+	</panel12>
+<panel11>
+		<colour>26, 216, 255, 255</colour>
+		<dmxChannel>110</dmxChannel>
+	</panel11>
+<panel13>
+		<colour>242, 234, 100, 255</colour>
+		<dmxChannel>112</dmxChannel>
+	</panel13>
+<panel14>
+		<colour>237, 187, 58, 255</colour>
+		<dmxChannel>113</dmxChannel>
+	</panel14>
+<panel15>
+		<colour>19, 64, 246, 255</colour>
+		<dmxChannel>114</dmxChannel>
+	</panel15>
+<panel16>
+		<colour>223, 0, 187, 255</colour>
+		<dmxChannel>115</dmxChannel>
+	</panel16>
+<panel17>
+		<colour>100, 255, 100, 255</colour>
+		<dmxChannel>116</dmxChannel>
+	</panel17>
+<panel18>
+		<colour>255, 121, 17, 255</colour>
+		<dmxChannel>117</dmxChannel>
+	</panel18>
 </parameters>

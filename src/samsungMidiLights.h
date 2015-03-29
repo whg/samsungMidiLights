@@ -17,13 +17,13 @@ struct Pad {
     ofVec2f pos;
     ofParameter<int> midiPitch;
     
-    ofxPanel colourPanel;
+    ofxPanel panel;
     ofParameterGroup paramGroup;
-    ofParameter<int> red;
-    ofParameter<int> green;
-    ofParameter<int> blue;
-
-
+//    ofParameter<int> red;
+//    ofParameter<int> green;
+//    ofParameter<int> blue;
+    ofParameter<ofColor> col;
+    ofParameter<int> dmxChannel;
 
     
     Pad(): name(""), on(false) {}
@@ -32,15 +32,18 @@ struct Pad {
         name(s),
         on(false),
         pos(x, y),
-        midiPitch(s, p, 1, 100),
         value(0) {
 
             paramGroup.setName(s);
-            paramGroup.add(red.set("red", 0, 0, 255));
-            paramGroup.add(green.set("blue", 0, 0, 255));
-            paramGroup.add(blue.set("green", 0, 0, 255));
-            colourPanel.setup(paramGroup);
-            
+//            paramGroup.add(red.set("red", 0, 0, 255));
+//            paramGroup.add(green.set("blue", 0, 0, 255));
+            paramGroup.add(midiPitch.set("midiPitch", p, 36, 54));
+            paramGroup.add(col.set("colour",100,ofColor(0,0),255));
+            paramGroup.add(dmxChannel.set("dmxChannel", y*6+x+100, 0, 512));
+            panel.setDefaultWidth(150);
+            panel.setup(paramGroup);
+            panel.setPosition(pos * ofVec2f(panel.getWidth()+25, panel.getHeight()+25));
+            panel.loadFromFile("settings.xml");
     }
 };
 
@@ -84,19 +87,19 @@ public:
     
     ofEasyCam cam;
     map<int, Pad> padKeys;
-    vector<Pad> pads;
+    vector<Pad*> pads;
     
-    vector<Sharpy> sharpys;
+    vector<Sharpy*> sharpys;
 
     ofxOBJModel model;
 
     LaunchPad lp1, lp2;
     
-    ofParameterGroup parameters;
-    map<string, padParam> midiPitches;
-    ofParameter<ofColor> color;
-    ofxPanel gui;
+
     
+    vector<ofAVFoundationPlayer*> launchPadMovies;
+    
+    LaunchPadEnvironment *lpe;
     
     vector<ofPixels*> pixelPerms;
 
