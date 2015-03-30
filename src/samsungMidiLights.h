@@ -16,7 +16,7 @@
 typedef enum {
     NITRO,
     SHARPY,
-    GOBO,
+    VIPER,
 } light_t;
 
 struct Light {
@@ -75,9 +75,9 @@ struct Sharpy : public Light {
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
-    bool showGui;
+    bool showGui, viperGui;
     
-    ofxDmx dmx;
+    ofxDmx dmx, dmxViper;
     
 public:
 	
@@ -116,6 +116,9 @@ public:
     ofParameterGroup paramGroup;
     ofParameter<int> sharpyTiltMax;
     ofParameter<int> sharpyPanMax;
+    ofParameter<int> viperTiltMax;
+    ofParameter<int> viperPanMax;
+    ofParameter<float> viperSpeed;
 
     
     vector<ofAVFoundationPlayer*> launchPadMovies;

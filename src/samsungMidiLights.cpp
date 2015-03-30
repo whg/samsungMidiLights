@@ -16,8 +16,13 @@
 #define NITRO_INTENSITY 6
 #define NITRO_MASTER_INTENSITY 1
 
-#define NUM_DMX_CHANNELS 400
-#define FRAMERATE 60
+#define VIPER_INTENSITY 2
+#define VIPER_PAN 25
+#define VIPER_TILT 27
+
+
+#define NUM_DMX_CHANNELS 406
+#define FRAMERATE 30
 
 ofVec3f deskCenter;
 float stheta = 0;
@@ -33,10 +38,15 @@ void samsungMidiLights::setup() {
     paramGroup.setName("settings...");
     paramGroup.add(sharpyTiltMax.set("sharpyTiltMax", 10, 0, 100));
     paramGroup.add(sharpyPanMax.set("sharpyPanMax", 10, 0, 100));
+    paramGroup.add(viperTiltMax.set("viperTiltMax", 2, 0, 20));
+    paramGroup.add(viperPanMax.set("viperPanMax", 2, 0, 20));
+    paramGroup.add(viperSpeed.set("viperSpeed", 1, 0, 5));
+
     panel.setup(paramGroup);
     panel.setPosition(ofPoint(420, 550));
     
     showGui = false;
+    viperGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 	
     model.load("/Users/whg/Desktop/samsung Lights project/2015_03_28_FOR_SIMULATION_STRIPPED_edit2.obj");
@@ -109,6 +119,26 @@ void samsungMidiLights::setup() {
 
     }
     
+    dmxChannel = 0;
+    for (int i = 1; i <= 10; i++) {
+        ss.str("");
+        ss << "viper" << i;
+        int x = (i-1) % 6;
+        int y = 0;
+        if (i > 6) {
+            y = 1;
+            x+= 1;
+        }
+        Light *l = new Sharpy(ss.str(), 41, true, x, y);
+        l->type = VIPER;
+        l->dmxChannel = dmxChannel;
+        dmxChannel+= 34;
+        lights.push_back(l);
+        
+    }
+
+    
+    
 //    for (int i = 0; i < lights.size(); i++) cout << lights[i]->name <<": " << lights[i]->midiPitch <<endl;
 //    ofExit();
 
@@ -167,6 +197,7 @@ void samsungMidiLights::setup() {
 
 #ifdef USE_DMX
     dmx.connect("/dev/tty.usbserial-EN110089", NUM_DMX_CHANNELS); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
+    dmxViper.connect("/dev/tty.usbserial-EN128343", 34*10);
 #endif
 
 
@@ -257,6 +288,21 @@ void samsungMidiLights::update() {
             dmx.setLevel(p->dmxChannel + SHARPY_STROBE, 255);
             dmx.setLevel(p->dmxChannel + 16, 255);
         }
+        else if (p->type == VIPER) {
+
+            Sharpy *s = (Sharpy*) p;
+
+            dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, 255); //p->value);
+            dmxViper.setLevel(p->dmxChannel + VIPER_TILT, s->tilt + int(s->t));
+            dmxViper.setLevel(p->dmxChannel + VIPER_PAN, s->pan + int(s->p));
+//            cout << int(s->p) << endl;
+            dmxViper.setLevel(p->dmxChannel + 1, 25); //shutter
+//            dmxViper.setLevel(p->dmxChannel + 2, 255);
+            dmxViper.setLevel(p->dmxChannel + 21, 255); //zoom
+            dmxViper.setLevel(p->dmxChannel + 12, 10); //zoom
+    
+
+        }
         
         
     }
@@ -264,7 +310,7 @@ void samsungMidiLights::update() {
     
     
     dmx.update();
-
+    dmxViper.update();
 #endif
 }
 
@@ -311,7 +357,7 @@ void samsungMidiLights::draw() {
 //        else ofSetHexColor(0xffffff);
 
         
-        if (lights[i]->type == SHARPY) {
+        if (lights[i]->type == SHARPY || lights[i]->type == VIPER) {
 //            ofPushMatrix();
             ofPushStyle();
             int n = g->faces.size() - 1;
@@ -332,13 +378,18 @@ void samsungMidiLights::draw() {
             end.z-= zr * 100 * ((sharpyc % 2 == 0) ? -1 : 1);
             
             Sharpy *s = (Sharpy*) lights[i];
-            s->t = zr * sharpyTiltMax;
+            if (s->type == SHARPY) s->t = zr * sharpyTiltMax;
+            else if (s->type == VIPER) {
+             s->t = zr * viperTiltMax;
+            }
+            
             
             float xr = sin(stheta +sharpyc*0.5);
             end.x-= xr * 200;
-            s->p = xr * sharpyPanMax;
+            if (s->type == SHARPY) s->p = xr * sharpyPanMax;
+            else if (s->type == VIPER) s->p = xr * viperPanMax;
             
-            if (s->on){
+            if (s->on && s->type == SHARPY){
                 ofDrawLine(g->faces[n].vertices[0], end);
             }
             
@@ -348,6 +399,20 @@ void samsungMidiLights::draw() {
         }
 
     }
+    
+    for (int i = 0; i < lights.size(); i++) {
+        if (lights[i]->type == VIPER) {
+            float zr = sin(stheta +sharpyc*1.2);
+            
+            Sharpy *s = (Sharpy*) lights[i];
+            s->t = zr * viperTiltMax;
+            float xr = sin(stheta +sharpyc*2.5);
+            s->p = xr * viperPanMax;
+
+
+        }
+    }
+    
     stheta+= 0.05;
 
 //    cout << rotX << ", " << rotY << endl;
@@ -392,9 +457,14 @@ void samsungMidiLights::draw() {
    
     if (showGui) {
         for (int i = 0; i < lights.size(); i++) {
-            lights[i]->panel.draw();
+            if (lights[i]->type != VIPER) lights[i]->panel.draw();
         }
         panel.draw();
+    }
+    if (viperGui) {
+        for (int i = 0; i < lights.size(); i++) {
+            if (lights[i]->type == VIPER) lights[i]->panel.draw();
+        }
     }
     
     
@@ -521,6 +591,17 @@ void samsungMidiLights::keyPressed(int key) {
             Light *p = lights[i];
             p->value = 0;
         }
+    }
+    else if (key == 'v') {
+        viperGui = !viperGui;
+    }
+    else if (key  == 'o') {
+        dmx.setLevel(401, 255);
+        dmx.setLevel(402, 255);
+        dmx.setLevel(403, 255);
+        dmx.setLevel(404, 255);
+        dmx.update();
+        cout << "flash" << endl;
     }
     
     if (showGui) {
