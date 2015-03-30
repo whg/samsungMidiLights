@@ -14,7 +14,7 @@
 
 
 typedef enum {
-    LED,
+    NITRO,
     SHARPY,
     GOBO,
 } light_t;
@@ -40,7 +40,7 @@ struct Light {
         on(false),
         pos(x, y),
         value(0) {
-            type = LED;
+            type = NITRO;
             
             paramGroup.setName(s);
             paramGroup.add(midiPitch.set("midiPitch", p, 36, 54));
@@ -51,7 +51,7 @@ struct Light {
             if (addGui) {
                 panel.setDefaultWidth(150);
                 panel.setup(paramGroup);
-                panel.setPosition(pos * ofVec2f(panel.getWidth()+25, panel.getHeight()+25));
+                panel.setPosition(pos * ofVec2f(panel.getWidth()+10, panel.getHeight()+10));
 //                panel.loadFromFile("settings.xml");
             }
     }

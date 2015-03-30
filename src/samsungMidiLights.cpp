@@ -7,6 +7,13 @@
 #define SHARPY_STEP 16
 #define SHARPY_ON 16
 #define LIGHT_STEP 4
+
+#define NITRO_STEP 12
+#define NITRO_RED 7
+#define NITRO_GREEN 8
+#define NITRO_BLUE 9
+#define NITRO_INTENSITY 6
+
 #define FRAMERATE 60
 
 ofVec3f deskCenter;
@@ -52,7 +59,7 @@ void samsungMidiLights::setup() {
             ss.str("");
             ss << "panel" << k++;
 //            int midiNote = 34 + 24 + k; //((i-1)*4) + (j-1);
-            lights.push_back(new Light(ss.str(), midiNote++, true, j-1, i-1));
+            lights.push_back(new Light(ss.str(), midiNote++, true, j+1, i-1));
 //            cout << midiNote << ": " << ss.str() << endl;
         }
     }
@@ -69,7 +76,16 @@ void samsungMidiLights::setup() {
     for (int i = 1; i <= 12; i++) {
         ss.str("");
         ss << "sharpy" << i;
-        Light *l = new Light(ss.str(), 41);
+        int x = 0;
+        int y = (i-1) / 4;// + (i-1) % 2;
+        if (((i-1) / 2) % 2 == 1) {
+            x = 5;
+//            y--;
+        }
+        if ((i-1) % 2 == 1) {
+            x++;
+        }
+        Light *l = new Light(ss.str(), 41, true, x, y);
         l->type = SHARPY;
         lights.push_back(l);
 
@@ -177,32 +193,6 @@ void samsungMidiLights::update() {
     lptoplay.clear();
     
     if (ofGetFrameNum() % (FRAMERATE / 12) == 0) {
-//        pc = -1;
-//        for (int i = 0; i < lights.size(); i++) {
-//            if (lights[i]->on) {
-//                pc = i;
-//                break;
-//            }
-//        }
-//        
-//        
-//        if (pc == -1) {
-//            lp1.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
-//            lp2.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
-//        }
-//        else {
-//            
-//            int q = pc % launchPadMovies.size();
-//            ofAVFoundationPlayer *player = launchPadMovies[q];
-////            player->nextFrame();
-//            player->update();
-//            lp2.set(player->getPixels());
-////            lp2.set(*pixelPerms[pc]);
-//            
-//            ofPixels opixels(player->getPixels());
-//            opixels.mirror(false, true);
-//            lp1.set(opixels);
-//        }
 #ifdef USE_LAUNCHPAD
         ofPixels pix(lpe->getPixels());
         lp1.set(pix);
@@ -215,10 +205,21 @@ void samsungMidiLights::update() {
     
     for (int i = 0; i < lights.size(); i++) {
         Pad *p = lights[i];
-        dmx.setLevel(p->dmxChannel, p->value);
-        dmx.setLevel(p->dmxChannel + 1, p->col->r);
-        dmx.setLevel(p->dmxChannel + 2, p->col->g);
-        dmx.setLevel(p->dmxChannel + 3, p->col->b);
+        
+        if (p->type == NITRO) {
+            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value);
+            dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r);
+            dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g);
+            dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
+        }
+        else if (p->type == SHARPY) {
+            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value);
+            dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r);
+            dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g);
+            dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
+        }
+        
+        
     }
 
     

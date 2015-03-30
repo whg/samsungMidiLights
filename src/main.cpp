@@ -8,7 +8,7 @@ int main(){
 
     ofGLFWWindowSettings settings;
     
-    settings.width = 1100;
+    settings.width = 1110;
     settings.height = 700;
     settings.position.x = 270;
     settings.resizable = true;
