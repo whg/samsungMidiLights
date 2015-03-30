@@ -7,15 +7,16 @@
 #define SHARPY_STEP 16
 #define SHARPY_ON 16
 #define LIGHT_STEP 4
+#define FRAMERATE 60
 
-//#define USE_DMX
-//#define DRAW_MODEL
-
+ofVec3f deskCenter;
+float stheta = 0;
+vector<int> lptoplay;
 //--------------------------------------------------------------
 void samsungMidiLights::setup() {
 
-    ofSetFrameRate(25);
-    
+    ofSetFrameRate(FRAMERATE);
+
 //	ofSetVerticalSync(true);
 	ofBackground(20);
     
@@ -23,35 +24,59 @@ void samsungMidiLights::setup() {
     showGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-    model.load("/Users/whg/Desktop/samsung Lights project/2015_03_25_FOR_SIMULATION_STRIPPED_edit2.obj");
-//    model.scale(5);
+    model.load("/Users/whg/Desktop/samsung Lights project/2015_03_28_FOR_SIMULATION_STRIPPED_edit2.obj");
 
-
-	midiIn.openPort("virtualMIDI Bus 1");	// by name
+//    vector<string> names = model.getGroupNames();
+//    for (int i = 0; i < names.size(); i++) cout << names[i] << endl;
+//    ofExit();
+    
+    
+    deskCenter = model.getGroup("center")->faces[0].vertices[0];
 	
 	// don't ignore sysex, timing, & active sense messages,
 	// these are ignored by default
 	midiIn.ignoreTypes(false, false, false);
 	midiIn.addListener(this);
 	midiIn.setVerbose(true);
+    midiIn.listPorts();
+    midiIn.openPort("virtualMIDI Bus 1");	// by name
 
 
     // start notes at 36
+    int midiNote = 36;
     stringstream ss;
     int k = 1;
     for (int i = 1; i <= 3; i++) {
-        for (int j = 1; j <= 6; j++) {
+        for (int j = 1; j <= 4; j++) {
             
             ss.str("");
             ss << "panel" << k++;
-            int midiNote = 34 + 24 + k; //((i-1)*4) + (j-1);
-            pads.push_back(new Pad(ss.str(), midiNote, j-1, i-1));
-
-            cout << midiNote << ": " << ss.str() << endl;
+//            int midiNote = 34 + 24 + k; //((i-1)*4) + (j-1);
+            lights.push_back(new Light(ss.str(), midiNote++, true, j-1, i-1));
+//            cout << midiNote << ": " << ss.str() << endl;
         }
     }
     
+
+//    for (int i = 1, k = 0; i <= 6; i++) {
+//        for (int j = 1; j <= 2; j++, k++) {
+//            ss.str("");
+//            ss << "sharpy" << i << "_" << j;
+//            //            sharpys.push_back(new Sharpy(ss.str(), 60 + k, i, j));
+//        }
+//    }
     
+    for (int i = 1; i <= 12; i++) {
+        ss.str("");
+        ss << "sharpy" << i;
+        Light *l = new Light(ss.str(), 41);
+        l->type = SHARPY;
+        lights.push_back(l);
+
+    }
+    
+//    for (int i = 0; i < lights.size(); i++) cout << lights[i]->name <<": " << lights[i]->midiPitch <<endl;
+//    ofExit();
 
     
 //    for (int i = 0; i < 16; i++) {
@@ -71,13 +96,6 @@ void samsungMidiLights::setup() {
 //        pixelPerms.push_back(p);
 //    }
     
-    for (int i = 1, k = 0; i <= 6; i++) {
-        for (int j = 1; j <= 2; j++, k++) {
-            ss.str("");
-            ss << "sharpy" << i << "_" << j;
-            sharpys.push_back(new Sharpy(ss.str(), 60 + k, i, j));
-        }
-    }
 
 
 
@@ -86,11 +104,12 @@ void samsungMidiLights::setup() {
     float n = cam.getNearClip();
     
     cam.setTranslationKey('t');
-    cam.setGlobalOrientation(ofQuaternion(-0.703205466, 0.0471465364, 0.708562314, 0.0352183878));
-    cam.setGlobalPosition(-1734.89771, 747.906738, -122.971588);
+    resetView();
 
-
+#ifdef USE_LAUNCHPAD
     lpe = new LaunchPadEnvironment();
+#endif
+
 //    for (int i = 0; i < 48; i++) {
 //        ss.str("");
 ////        ss << "0" << (i+1) << ".mov";
@@ -112,10 +131,13 @@ void samsungMidiLights::setup() {
 //    launchPadMovies.push_back(new LPCircularAnimation);
 //    launchPadMovies.push_back(new LPSineAnimation);
 
-    dmx.connect("/dev/tty.usbserial-EN110089", 200); //sharpys.size() * SHARPY_STEP + pads.size() * LIGHT_STEP);
+#ifdef USE_DMX
+    dmx.connect("/dev/tty.usbserial-EN110089", 200); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
+#endif
 
 
 }
+
 
 float theta = 0;
 
@@ -126,15 +148,17 @@ void samsungMidiLights::exit() {
     midiIn.closePort();
     midiIn.removeListener(this);
     
+#ifdef USE_LAUNCHPAD
     lp1.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
     lp2.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
-    
-    for (int i = 0; i < pads.size(); i++) {
-        delete pads[i];
+#endif
+
+    for (int i = 0; i < lights.size(); i++) {
+        delete lights[i];
     }
-    for (int i = 0; i < sharpys.size(); i++) {
-        delete sharpys[i];
-    }
+//    for (int i = 0; i < sharpys.size(); i++) {
+//        delete sharpys[i];
+//    }
     for (int i = 0; i < launchPadMovies.size(); i++) {
         delete launchPadMovies[i];
     }
@@ -145,11 +169,17 @@ int pc = 0;
 void samsungMidiLights::update() {
     
 //    static int pc = 0;
+
+    //add the launch pad animation
+    for (int i = 0; i < lptoplay.size(); i++) {
+        lpe->add(animationCreator(lptoplay[i]));
+    }
+    lptoplay.clear();
     
-    if (ofGetFrameNum() % 2 == 0) {
+    if (ofGetFrameNum() % (FRAMERATE / 12) == 0) {
 //        pc = -1;
-//        for (int i = 0; i < pads.size(); i++) {
-//            if (pads[i]->on) {
+//        for (int i = 0; i < lights.size(); i++) {
+//            if (lights[i]->on) {
 //                pc = i;
 //                break;
 //            }
@@ -173,15 +203,18 @@ void samsungMidiLights::update() {
 //            opixels.mirror(false, true);
 //            lp1.set(opixels);
 //        }
-
-        lp1.set(lpe->getPixels());
-
+#ifdef USE_LAUNCHPAD
+        ofPixels pix(lpe->getPixels());
+        lp1.set(pix);
+        pix.mirror(false, true);
+        lp2.set(pix);
+#endif
     }
     
 #ifdef USE_DMX
     
-    for (int i = 0; i < pads.size(); i++) {
-        Pad *p = pads[i];
+    for (int i = 0; i < lights.size(); i++) {
+        Pad *p = lights[i];
         dmx.setLevel(p->dmxChannel, p->value);
         dmx.setLevel(p->dmxChannel + 1, p->col->r);
         dmx.setLevel(p->dmxChannel + 2, p->col->g);
@@ -228,52 +261,87 @@ void samsungMidiLights::draw() {
     
     ofxOBJGroup *g;
     
+    float rotY = ofMap(mouseY, 0, ofGetHeight(), 0, 360);
+    float rotX = ofMap(mouseX, 0, ofGetWidth(), -180, -100);
+    int sharpyc = 0;
+    
 //    for (map<int, Pad>::iterator it =  padKeys.begin(); it != padKeys.end(); ++it) {
-    for (int i = 0; i < pads.size(); i++) {
-//        cout << it->second.name << ": " << it->second.on << endl;
-//        cout << pads[i]->name
-        g = model.getGroup(pads[i]->name);
+    for (int i = 0; i < lights.size(); i++) {
+        g = model.getGroup(lights[i]->name);
         if (g == NULL) {
             continue;
         }
-        if (pads[i]->on) {
-            float intensity = ofMap(pads[i]->value, 0, 127, 0, 255);
-            ofSetColor(pads[i]->col->r, pads[i]->col->g, pads[i]->col->b, intensity);
+        if (lights[i]->on) {
+            float intensity = ofMap(lights[i]->value, 0, 127, 0, 255);
+            ofSetColor(lights[i]->col->r, lights[i]->col->g, lights[i]->col->b, intensity);
             ofFill();
+            g->draw(lights[i]->on);
         }
-        else ofSetHexColor(0xffffff);
-        g->draw(pads[i]->on);
+//        else ofSetHexColor(0xffffff);
+
+        
+        if (lights[i]->type == SHARPY && lights[i]->on) {
+//            ofPushMatrix();
+            ofPushStyle();
+            int n = g->faces.size() - 1;
+//            ofTranslate((g->faces[n].vertices[0]));
+//            float rotY = ofMap(mouseY, 0, 900, 0, 360);
+//            float flip = lights[i](((i/2) % 2 == 1) ? -1 : 1)
+//            ofRotateX(rotX);// rot * ((i % 2 == 0) ? -1 : 1));
+//            ofRotateZ(rotY); // * ((i % 2 == 0) ? -1 : 1));
+            
+//            ofRotateX(144 * ((i % 2 == 0) ? -1 : 1));
+//            ofRotateZ(390);
+            
+            ofSetLineWidth(5);
+            ofSetHexColor(0xffffff);
+//            ofDrawLine(0, 0, 0, deskCenter.x, deskCenter.y, deskCenter.z);
+            ofVec3f end(deskCenter);
+            end.z-= sin(stheta +sharpyc*0.2 ) * 100 * ((sharpyc % 2 == 0) ? -1 : 1);
+
+            end.x-= sin(stheta +sharpyc*0.5 ) * 200;
+            
+            ofDrawLine(g->faces[n].vertices[0], end);
+//            ofDrawLine(0, 0, 0, 2500);
+            
+            ofPopStyle();
+//            ofPopMatrix();
+            sharpyc++;
+        }
 
     }
+    stheta+= 0.05;
+
+//    cout << rotX << ", " << rotY << endl;
 
     ofPushStyle();
     ofSetLineWidth(5);
 
-    for (int i = 0; i < sharpys.size(); i++) {
-        g = model.getGroup(sharpys[i]->name);
-        if (g == NULL) {
-            continue;
-        }
-        if (sharpys[i]->on  || true) {
-//            ofSetColor(sharpys[i]->value*2);
-            ofFill();
-            
-            ofPushMatrix();
-            
-            int n = g->faces.size() - 1;
-            ofTranslate((g->faces[n].vertices[0]));
-            float rot = ofMap(sharpys[i]->value, 0, 127, -180, -100);
-            ofRotateX(rot * (((i/2) % 2 == 1) ? -1 : 1));
-            
-            ofSetLineWidth(5);
-            ofDrawLine(0, 0, 0, 2500);
-            
-            ofPopMatrix();
-            
-        }
-        
-        
-    }
+//    for (int i = 0; i < sharpys.size(); i++) {
+//        g = model.getGroup(sharpys[i]->name);
+//        if (g == NULL) {
+//            continue;
+//        }
+//        if (sharpys[i]->on  || true) {
+////            ofSetColor(sharpys[i]->value*2);
+//            ofFill();
+//            
+//            ofPushMatrix();
+//            
+//            int n = g->faces.size() - 1;
+//            ofTranslate((g->faces[n].vertices[0]));
+//            float rot = ofMap(sharpys[i]->value, 0, 127, -180, -100);
+//            ofRotateX(rot * (((i/2) % 2 == 1) ? -1 : 1));
+//            
+//            ofSetLineWidth(5);
+//            ofDrawLine(0, 0, 0, 2500);
+//            
+//            ofPopMatrix();
+//            
+//        }
+//        
+//        
+//    }
 
     
     ofPopMatrix();
@@ -285,8 +353,8 @@ void samsungMidiLights::draw() {
 
    
     if (showGui) {
-        for (int i = 0; i < pads.size(); i++) {
-            pads[i]->panel.draw();
+        for (int i = 0; i < lights.size(); i++) {
+            lights[i]->panel.draw();
         }
     }
     
@@ -300,43 +368,56 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
 	// make a copy of the latest message
 	midiMessage = msg;
     stringstream ss;
-    ss << "(" << msg.status << ")" << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
-    cout << ss.str() << endl;
+//    ss << "(" << msg.status << ")" << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
+//    cout << ss.str() << endl;
     
-//    if (msg.status == MIDI_NOTE_ON) {
-//        padKeys[msg.pitch].on = true;
-//    }
-//    else if (msg.status == MIDI_NOTE_OFF) {
-//        padKeys[msg.pitch].on = false;
-//    }
+    if (msg.status == MIDI_NOTE_ON) {
+        ss << "(NOTE_ON) " << msg.pitch << ": " << msg.velocity;
+
+    }
+    if (msg.status == MIDI_NOTE_OFF) {
+        ss << "(NOTE_OFF) "<< msg.pitch << ": " << msg.velocity;
+        
+    }
+    else if (msg.status == MIDI_CONTROL_CHANGE) {
+        ss << "(CONTROL) " << msg.control << ": " << msg.value;
+    }
+    
+//    ss << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
+    cout << ss.str() << endl;
 //
 
-    for (int i = 0; i < pads.size(); i++) {
-        Pad *p = pads[i];
-        if (p->midiPitch == msg.pitch) {
+    for (int i = 0; i < lights.size(); i++) {
+        Light *p = lights[i];
+        if (msg.status == MIDI_CONTROL_CHANGE && msg.control == p->midiPitch) {
+            p->value = msg.value;
+        }
+        else if (p->midiPitch == msg.pitch) {
             if (msg.status == MIDI_NOTE_ON) {
                 p->on = true;
-                p->value = msg.velocity;
+
+                if (msg.pitch != 37) lptoplay.push_back(msg.pitch % 10);
+//                p->value = msg.velocity;
             }
             else if (msg.status == MIDI_NOTE_OFF) {
                 p->on = false;
-                p->value = 0;
+//                p->value = 0;
             }
         }
     }
     
-    for (int i = 0; i < sharpys.size(); i++) {
-        Sharpy *p = sharpys[i];
-        if (p->midiPitch == msg.pitch) {
-            if (msg.status == MIDI_NOTE_ON) {
-                p->on = true;
-                p->value = msg.velocity;
-            }
-            else if (msg.status == MIDI_NOTE_OFF) {
-                p->on = false;
-            }
-        }
-    }
+//    for (int i = 0; i < sharpys.size(); i++) {
+//        Sharpy *p = sharpys[i];
+//        if (p->midiPitch == msg.pitch) {
+//            if (msg.status == MIDI_NOTE_ON) {
+//                p->on = true;
+//                p->value = msg.velocity;
+//            }
+//            else if (msg.status == MIDI_NOTE_OFF) {
+//                p->on = false;
+//            }
+//        }
+//    }
     
 }
 
@@ -357,17 +438,24 @@ void samsungMidiLights::keyPressed(int key) {
 	}
     
     if (key == 's') {
-        for (int i  = 0; i < pads.size(); i++) {
-            pads[i]->panel.saveToFile("settings.xml");
+        for (int i  = 0; i < lights.size(); i++) {
+            lights[i]->panel.saveToFile("settings.xml");
         }
         cout << "saved all settings" << endl;
     }
+    if (key == 'l') {
+        for (int i  = 0; i < lights.size(); i++) {
+            lights[i]->panel.loadFromFile("settings.xml");
+        }
+        cout << "loaded all settings" << endl;
+    }
     else if (key == 'c') {
-        for (int i  = 0; i < pads.size(); i++) {
-            pads[i]->value = 0;
-            pads[i]->on = false;
+        for (int i  = 0; i < lights.size(); i++) {
+            lights[i]->value = 0;
+            lights[i]->on = false;
         }
     }
+#ifdef USE_LAUNCHPAD
     else if (key == OF_KEY_UP) {
 //        pc++;
         lpe->add(new LPDot);
@@ -383,7 +471,13 @@ void samsungMidiLights::keyPressed(int key) {
     else if (key == OF_KEY_LEFT) {
         lpe->add(new LPClockLine);
     }
-    
+    else if (key >= '0' && key <= '9') {
+        lpe->add(animationCreator(key - '0'));
+    }
+#endif
+    else if (key == 'r') {
+        resetView();
+    }
     
     if (showGui) {
         cam.disableMouseInput();
@@ -421,8 +515,8 @@ void samsungMidiLights::drawMPC(ofEventArgs &args) {
     ofScale(1, -1);
     
     int d = 50;
-    for (int i = 0; i < pads.size(); i++) {
-        Pad *p = pads[i];
+    for (int i = 0; i < lights.size(); i++) {
+        Light *p = lights[i];
         
         if (p->on) {
             ofSetColor(255);
@@ -430,4 +524,11 @@ void samsungMidiLights::drawMPC(ofEventArgs &args) {
         
         ofDrawRectangle(p->pos.x * d, p->pos.y * d, d, d);
     }
+}
+
+
+void samsungMidiLights::resetView() {
+    cam.setGlobalOrientation(ofQuaternion(-0.703205466, 0.0471465364, 0.708562314, 0.0352183878));
+    cam.setGlobalPosition(-1734.89771, 747.906738, -122.971588);
+
 }

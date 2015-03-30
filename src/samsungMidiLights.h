@@ -8,52 +8,62 @@
 
 #include "LaunchPad.h"
 
-typedef ofParameter<int> padParam;
+//#define USE_DMX
+#define DRAW_MODEL
+#define USE_LAUNCHPAD
 
-struct Pad {
+
+typedef enum {
+    LED,
+    SHARPY,
+    GOBO,
+} light_t;
+
+struct Light {
     string name;
     bool on;
     float value;
     ofVec2f pos;
     ofParameter<int> midiPitch;
+    light_t type;
     
     ofxPanel panel;
     ofParameterGroup paramGroup;
-//    ofParameter<int> red;
-//    ofParameter<int> green;
-//    ofParameter<int> blue;
     ofParameter<ofColor> col;
     ofParameter<int> dmxChannel;
 
     
-    Pad(): name(""), on(false) {}
+    Light(): name(""), on(false) {}
     
-    Pad(string s, int p, int x, int y):
+    Light(string s, int p, bool addGui=false, int x=0, int y=0):
         name(s),
         on(false),
         pos(x, y),
         value(0) {
-
+            type = LED;
+            
             paramGroup.setName(s);
-//            paramGroup.add(red.set("red", 0, 0, 255));
-//            paramGroup.add(green.set("blue", 0, 0, 255));
             paramGroup.add(midiPitch.set("midiPitch", p, 36, 54));
             paramGroup.add(col.set("colour",100,ofColor(0,0),255));
             paramGroup.add(dmxChannel.set("dmxChannel", y*6+x+100, 0, 512));
-            panel.setDefaultWidth(150);
-            panel.setup(paramGroup);
-            panel.setPosition(pos * ofVec2f(panel.getWidth()+25, panel.getHeight()+25));
-            panel.loadFromFile("settings.xml");
+
+            
+            if (addGui) {
+                panel.setDefaultWidth(150);
+                panel.setup(paramGroup);
+                panel.setPosition(pos * ofVec2f(panel.getWidth()+25, panel.getHeight()+25));
+//                panel.loadFromFile("settings.xml");
+            }
     }
 };
 
-struct Sharpy : public Pad {
-    float value2;
-    Sharpy(string s, int p, int x, int y): Pad(s, p, x, y){
-        value = 0;
-        value2 = 0;
-    }
-};
+//struct Sharpy : public Pad {
+//    float value2;
+//    Sharpy(string s, int p, int x, int y): Pad(s, p, x, y){
+//        value = 0;
+//        value2 = 0;
+//    }
+//};
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
@@ -86,23 +96,28 @@ public:
     
     
     ofEasyCam cam;
-    map<int, Pad> padKeys;
-    vector<Pad*> pads;
-    
-    vector<Sharpy*> sharpys;
+//    map<int, Pad> padKeys;
+//    map<int, Light*> lights;
+    vector<Light*> lights;
+    vector<string> groupNames;
+//    vector<Sharpy*> sharpys;
 
     ofxOBJModel model;
 
-    LaunchPad lp1, lp2;
     
 
     
     vector<ofAVFoundationPlayer*> launchPadMovies;
     
+#ifdef USE_LAUNCHPAD
+    LaunchPad lp1, lp2;
     LaunchPadEnvironment *lpe;
-    
+#endif
+
     vector<ofPixels*> pixelPerms;
 
+
+    void resetView();
 };
 
 

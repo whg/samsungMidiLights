@@ -11,13 +11,13 @@
 #include "ofMain.h"
 #include "ofxLaunchpad.h"
 
-static int portCounter = 1;
+static int portCounter = 2;
 
 class LaunchPad : public ofxLaunchpad {
     
 public:
     LaunchPad() {
-//        ofxLaunchpad::setup(portCounter++);
+        ofxLaunchpad::setup(portCounter++);
     }
     
     void draw(ofEventArgs & args) {
@@ -329,6 +329,7 @@ LaunchPadAnimation animations[] = {
 };
 
 inline LaunchPadAnimation* animationCreator(int v) {
+    cout << "getting animtion " << v << endl;
     switch(v) {
         case 0:
             return new LPChevron;
@@ -344,8 +345,14 @@ inline LaunchPadAnimation* animationCreator(int v) {
             return new LPDot;
         case 6:
             return new LPSmallHLines;
-        
+        case 7:
+            return new LPClockLine;
+        case 8:
+            return new LPAntiClockLine;
+        case 9:
+            return new LPHLine;
     }
+
 }
 
 

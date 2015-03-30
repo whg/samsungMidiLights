@@ -29,7 +29,9 @@ int main(){
 //    shared_ptr<LaunchPad> launchPad1(new LaunchPad);
 //    ofAddListener(launchPad1Window->events().draw, launchPad1.get(), &LaunchPad::draw);
 
+#ifdef USE_LAUNCHPAD
     ofAddListener(launchPad1Window->events().draw, &mainApp->lp1, &LaunchPad::draw);
+#endif
 
 //    settings.position.x = 1440-settings.width;
 //    settings.position.y = 0;
