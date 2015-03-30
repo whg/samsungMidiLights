@@ -1,6 +1,7 @@
 #include "samsungMidiLights.h"
 #include <iomanip>
 
+#define SHARPY_PAN 10
 #define SHARPY_TILT 12
 #define SHARPY_STROBE 2
 #define SHARPY_DIMMER 3
@@ -27,6 +28,11 @@ void samsungMidiLights::setup() {
 //	ofSetVerticalSync(true);
 	ofBackground(20);
     
+    paramGroup.setName("settings...");
+    paramGroup.add(sharpyTiltMax.set("sharpyTiltMax", 10, 0, 100));
+    paramGroup.add(sharpyPanMax.set("sharpyPanMax", 10, 0, 100));
+    panel.setup(paramGroup);
+    panel.setPosition(ofPoint(420, 550));
     
     showGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
@@ -53,13 +59,20 @@ void samsungMidiLights::setup() {
     int midiNote = 36;
     stringstream ss;
     int k = 1;
+    int dmxChannel = 0
+    
+    ;
     for (int i = 1; i <= 3; i++) {
         for (int j = 1; j <= 4; j++) {
             
             ss.str("");
-            ss << "panel" << k++;
+            ss << "panel" << k;
 //            int midiNote = 34 + 24 + k; //((i-1)*4) + (j-1);
-            lights.push_back(new Light(ss.str(), midiNote++, true, j+1, i-1));
+            Light *l = new Light(ss.str(), midiNote++, true, j+1, i-1);
+            l->dmxChannel = dmxChannel;
+            dmxChannel+= 12;
+            lights.push_back(l);
+            k++;
 //            cout << midiNote << ": " << ss.str() << endl;
         }
     }
@@ -73,6 +86,7 @@ void samsungMidiLights::setup() {
 //        }
 //    }
     
+    dmxChannel = 200;
     for (int i = 1; i <= 12; i++) {
         ss.str("");
         ss << "sharpy" << i;
@@ -85,8 +99,10 @@ void samsungMidiLights::setup() {
         if ((i-1) % 2 == 1) {
             x++;
         }
-        Light *l = new Light(ss.str(), 41, true, x, y);
-        l->type = SHARPY;
+        Light *l = new Sharpy(ss.str(), 41, true, x, y);
+//        l->type = SHARPY;
+        l->dmxChannel = dmxChannel;
+        dmxChannel+= 16;
         lights.push_back(l);
 
     }
@@ -148,7 +164,7 @@ void samsungMidiLights::setup() {
 //    launchPadMovies.push_back(new LPSineAnimation);
 
 #ifdef USE_DMX
-    dmx.connect("/dev/tty.usbserial-EN110089", 200); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
+    dmx.connect("/dev/tty.usbserial-EN110089", dmxChannel); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
 #endif
 
 
@@ -204,7 +220,7 @@ void samsungMidiLights::update() {
 #ifdef USE_DMX
     
     for (int i = 0; i < lights.size(); i++) {
-        Pad *p = lights[i];
+        Light *p = lights[i];
         
         if (p->type == NITRO) {
             dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value);
@@ -213,25 +229,26 @@ void samsungMidiLights::update() {
             dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
         }
         else if (p->type == SHARPY) {
-            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value);
-            dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r);
-            dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g);
-            dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
+            Sharpy *s = (Sharpy*) p;
+            dmx.setLevel(p->dmxChannel + SHARPY_DIMMER, p->value);
+            dmx.setLevel(p->dmxChannel + SHARPY_TILT, s->tilt + s->t);
+            dmx.setLevel(p->dmxChannel + SHARPY_PAN, s->pan + s->p);
+            dmx.setLevel(p->dmxChannel + SHARPY_STROBE, 255);
         }
         
         
     }
 
     
-    for (int i = 0; i < sharpys.size(); i++) {
-        
-        dmx.setLevel(i*SHARPY_STEP + SHARPY_STROBE, 255);
-        dmx.setLevel(i*SHARPY_STEP + SHARPY_DIMMER, sharpys[i]->value * 0.5); //sharpys[i]->on * 255);
-        dmx.setLevel(i*SHARPY_STEP + SHARPY_TILT, sharpys[i]->value);
-        dmx.setLevel(i*SHARPY_STEP + SHARPY_ON, 255);
-
-        
-    }
+//    for (int i = 0; i < sharpys.size(); i++) {
+//        
+//        dmx.setLevel(i*SHARPY_STEP + SHARPY_STROBE, 255);
+//        dmx.setLevel(i*SHARPY_STEP + SHARPY_DIMMER, sharpys[i]->value * 0.5); //sharpys[i]->on * 255);
+//        dmx.setLevel(i*SHARPY_STEP + SHARPY_TILT, sharpys[i]->value);
+//        dmx.setLevel(i*SHARPY_STEP + SHARPY_ON, 255);
+//
+//        
+//    }
     
     dmx.update();
 
@@ -281,7 +298,7 @@ void samsungMidiLights::draw() {
 //        else ofSetHexColor(0xffffff);
 
         
-        if (lights[i]->type == SHARPY && lights[i]->on) {
+        if (lights[i]->type == SHARPY) {
 //            ofPushMatrix();
             ofPushStyle();
             int n = g->faces.size() - 1;
@@ -298,12 +315,19 @@ void samsungMidiLights::draw() {
             ofSetHexColor(0xffffff);
 //            ofDrawLine(0, 0, 0, deskCenter.x, deskCenter.y, deskCenter.z);
             ofVec3f end(deskCenter);
-            end.z-= sin(stheta +sharpyc*0.2 ) * 100 * ((sharpyc % 2 == 0) ? -1 : 1);
-
-            end.x-= sin(stheta +sharpyc*0.5 ) * 200;
+            float zr = sin(stheta +sharpyc*0.2);
+            end.z-= zr * 100 * ((sharpyc % 2 == 0) ? -1 : 1);
             
-            ofDrawLine(g->faces[n].vertices[0], end);
-//            ofDrawLine(0, 0, 0, 2500);
+            Sharpy *s = (Sharpy*) lights[i];
+            s->t = zr * sharpyTiltMax;
+            
+            float xr = sin(stheta +sharpyc*0.5);
+            end.x-= xr * 200;
+            s->p = xr * sharpyPanMax;
+            
+            if (s->on){
+                ofDrawLine(g->faces[n].vertices[0], end);
+            }
             
             ofPopStyle();
 //            ofPopMatrix();
@@ -357,6 +381,7 @@ void samsungMidiLights::draw() {
         for (int i = 0; i < lights.size(); i++) {
             lights[i]->panel.draw();
         }
+        panel.draw();
     }
     
     
@@ -398,7 +423,6 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
                 p->on = true;
 
                 if (msg.pitch != 37) lptoplay.push_back(msg.pitch % 10);
-//                p->value = msg.velocity;
             }
             else if (msg.status == MIDI_NOTE_OFF) {
                 p->on = false;

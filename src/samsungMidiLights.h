@@ -8,7 +8,7 @@
 
 #include "LaunchPad.h"
 
-//#define USE_DMX
+#define USE_DMX
 #define DRAW_MODEL
 #define USE_LAUNCHPAD
 
@@ -46,7 +46,6 @@ struct Light {
             paramGroup.add(midiPitch.set("midiPitch", p, 36, 54));
             paramGroup.add(col.set("colour",100,ofColor(0,0),255));
             paramGroup.add(dmxChannel.set("dmxChannel", y*6+x+100, 0, 512));
-
             
             if (addGui) {
                 panel.setDefaultWidth(150);
@@ -57,13 +56,20 @@ struct Light {
     }
 };
 
-//struct Sharpy : public Pad {
-//    float value2;
-//    Sharpy(string s, int p, int x, int y): Pad(s, p, x, y){
-//        value = 0;
-//        value2 = 0;
-//    }
-//};
+struct Sharpy : public Light {
+    float value2;
+    ofParameter<int> tilt;
+    ofParameter<int> pan;
+    float t, p;
+
+    Sharpy(string s, int p, bool addGui=false, int x=0, int y=0): Light(s, p, addGui, x, y) {
+        type = SHARPY;
+        panel.add(tilt.set("tilt", 10, 0, 255));
+        panel.add(pan.set("pan", 10, 0, 255));
+        panel.setPosition(pos * ofVec2f(panel.getWidth()+10, panel.getHeight()+10));
+        t = p = 0;
+    }
+};
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
@@ -104,7 +110,10 @@ public:
 
     ofxOBJModel model;
 
-    
+    ofxPanel panel;
+    ofParameterGroup paramGroup;
+    ofParameter<int> sharpyTiltMax;
+    ofParameter<int> sharpyPanMax;
 
     
     vector<ofAVFoundationPlayer*> launchPadMovies;
