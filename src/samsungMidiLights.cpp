@@ -254,7 +254,7 @@ void samsungMidiLights::update() {
     }
     lptoplay.clear();
     
-    if (ofGetFrameNum() % (FRAMERATE / 12) == 0) {
+    if (true || ofGetFrameNum() % (FRAMERATE / 12) == 0) {
 #ifdef USE_LAUNCHPAD
         ofPixels pix(lpe->getPixels());
         lp1.set(pix);
@@ -293,8 +293,8 @@ void samsungMidiLights::update() {
             Sharpy *s = (Sharpy*) p;
 
             dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, 255); //p->value);
-            dmxViper.setLevel(p->dmxChannel + VIPER_TILT, s->tilt + int(s->t));
-            dmxViper.setLevel(p->dmxChannel + VIPER_PAN, s->pan + int(s->p));
+            dmxViper.setLevel(p->dmxChannel + VIPER_TILT, ofClamp(s->tilt + int(s->t), 0, 255));
+            dmxViper.setLevel(p->dmxChannel + VIPER_PAN, ofClamp(s->pan + int(s->p), 0, 255));
 //            cout << int(s->p) << endl;
             dmxViper.setLevel(p->dmxChannel + 1, 25); //shutter
 //            dmxViper.setLevel(p->dmxChannel + 2, 255);
@@ -500,13 +500,19 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
         Light *p = lights[i];
         if (msg.status == MIDI_CONTROL_CHANGE && msg.control == p->midiPitch) {
             p->value = msg.value;
+            if (msg.value < 1) {
+                p->on = false;
+            }
+            else if (msg.value > 99){
+                p->on = true;
+            }
         }
         else if (p->midiPitch == msg.pitch) {
             if (msg.status == MIDI_NOTE_ON) {
                 p->on = true;
-
                 if (msg.pitch != 37) lptoplay.push_back(msg.pitch % 10);
-            }
+
+                            }
             else if (msg.status == MIDI_NOTE_OFF) {
                 p->on = false;
 //                p->value = 0;

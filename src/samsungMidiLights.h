@@ -8,7 +8,7 @@
 
 #include "LaunchPad.h"
 
-#define USE_DMX
+//#define USE_DMX
 #define DRAW_MODEL
 #define USE_LAUNCHPAD
 
@@ -43,7 +43,7 @@ struct Light {
             type = NITRO;
             
             paramGroup.setName(s);
-            paramGroup.add(midiPitch.set("midiPitch", p, 36, 54));
+            paramGroup.add(midiPitch.set("midiPitch", p, 34, 78));
             paramGroup.add(col.set("colour",100,ofColor(0,0),255));
             paramGroup.add(dmxChannel.set("dmxChannel", y*6+x+100, 0, 512));
             
