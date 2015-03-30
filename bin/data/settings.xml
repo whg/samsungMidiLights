@@ -91,86 +91,86 @@
 <sharpy1>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>145</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>200</dmxChannel>
+	<tilt>71</tilt>
+		<pan>139</pan>
 	</sharpy1>
 <sharpy2>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>161</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>216</dmxChannel>
+	<tilt>78</tilt>
+		<pan>142</pan>
 	</sharpy2>
 <sharpy3>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>177</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>232</dmxChannel>
+	<tilt>69</tilt>
+		<pan>117</pan>
 	</sharpy3>
 <sharpy4>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>193</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>248</dmxChannel>
+	<tilt>79</tilt>
+		<pan>112</pan>
 	</sharpy4>
 <sharpy5>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>209</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>264</dmxChannel>
+	<tilt>88</tilt>
+		<pan>149</pan>
 	</sharpy5>
 <sharpy6>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>225</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>280</dmxChannel>
+	<tilt>86</tilt>
+		<pan>149</pan>
 	</sharpy6>
 <sharpy7>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>241</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>296</dmxChannel>
+	<tilt>83</tilt>
+		<pan>110</pan>
 	</sharpy7>
 <sharpy8>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>257</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>312</dmxChannel>
+	<tilt>88</tilt>
+		<pan>107</pan>
 	</sharpy8>
 <sharpy9>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>273</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>328</dmxChannel>
+	<tilt>88</tilt>
+		<pan>156</pan>
 	</sharpy9>
 <sharpy10>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>289</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>344</dmxChannel>
+	<tilt>96</tilt>
+		<pan>161</pan>
 	</sharpy10>
 <sharpy11>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>305</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>360</dmxChannel>
+	<tilt>88</tilt>
+		<pan>98</pan>
 	</sharpy11>
 <sharpy12>
 		<midiPitch>41</midiPitch>
 		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>321</dmxChannel>
-	<tilt>10</tilt>
-		<pan>10</pan>
+		<dmxChannel>376</dmxChannel>
+	<tilt>96</tilt>
+		<pan>91</pan>
 	</sharpy12>
 <panel0>
 		<midiPitch>36</midiPitch>
@@ -179,63 +179,63 @@
 	</panel0>
 <panel1>
 		<midiPitch>36</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>1</dmxChannel>
+		<colour>0, 0, 255, 255</colour>
+		<dmxChannel>0</dmxChannel>
 	</panel1>
 <panel2>
 		<midiPitch>37</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>13</dmxChannel>
+		<colour>0, 81, 255, 255</colour>
+		<dmxChannel>12</dmxChannel>
 	</panel2>
 <panel3>
 		<midiPitch>38</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>25</dmxChannel>
+		<colour>131, 123, 249, 255</colour>
+		<dmxChannel>24</dmxChannel>
 	</panel3>
 <panel4>
 		<midiPitch>39</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>37</dmxChannel>
+		<colour>100, 34, 255, 255</colour>
+		<dmxChannel>36</dmxChannel>
 	</panel4>
 <panel5>
 		<midiPitch>40</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>49</dmxChannel>
+		<colour>95, 213, 255, 255</colour>
+		<dmxChannel>48</dmxChannel>
 	</panel5>
 <panel6>
 		<midiPitch>41</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>61</dmxChannel>
+		<colour>0, 232, 235, 255</colour>
+		<dmxChannel>60</dmxChannel>
 	</panel6>
 <panel7>
 		<midiPitch>42</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>73</dmxChannel>
+		<colour>17, 232, 230, 255</colour>
+		<dmxChannel>72</dmxChannel>
 	</panel7>
 <panel8>
 		<midiPitch>43</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>85</dmxChannel>
+		<colour>150, 154, 255, 255</colour>
+		<dmxChannel>84</dmxChannel>
 	</panel8>
 <panel9>
 		<midiPitch>44</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>97</dmxChannel>
+		<colour>50, 78, 234, 255</colour>
+		<dmxChannel>96</dmxChannel>
 	</panel9>
 <panel10>
 		<midiPitch>45</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>109</dmxChannel>
+		<colour>0, 38, 255, 255</colour>
+		<dmxChannel>108</dmxChannel>
 	</panel10>
 <panel11>
 		<midiPitch>46</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>121</dmxChannel>
+		<colour>67, 246, 255, 228</colour>
+		<dmxChannel>120</dmxChannel>
 	</panel11>
 <panel12>
 		<midiPitch>47</midiPitch>
-		<colour>100, 100, 100, 255</colour>
-		<dmxChannel>133</dmxChannel>
+		<colour>123, 27, 255, 255</colour>
+		<dmxChannel>132</dmxChannel>
 	</panel12>
 <group/>
 <settings...>

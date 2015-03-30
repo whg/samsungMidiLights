@@ -51,7 +51,7 @@ struct Light {
                 panel.setDefaultWidth(150);
                 panel.setup(paramGroup);
                 panel.setPosition(pos * ofVec2f(panel.getWidth()+10, panel.getHeight()+10));
-//                panel.loadFromFile("settings.xml");
+                panel.loadFromFile("settings.xml");
             }
     }
 };
@@ -68,6 +68,8 @@ struct Sharpy : public Light {
         panel.add(pan.set("pan", 10, 0, 255));
         panel.setPosition(pos * ofVec2f(panel.getWidth()+10, panel.getHeight()+10));
         t = p = 0;
+        panel.loadFromFile("settings.xml");
+
     }
 };
 

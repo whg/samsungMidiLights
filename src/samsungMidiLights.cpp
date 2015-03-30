@@ -11,10 +11,12 @@
 
 #define NITRO_STEP 12
 #define NITRO_RED 7
-#define NITRO_GREEN 8
-#define NITRO_BLUE 9
+#define NITRO_GREEN 9
+#define NITRO_BLUE 8
 #define NITRO_INTENSITY 6
+#define NITRO_MASTER_INTENSITY 1
 
+#define NUM_DMX_CHANNELS 400
 #define FRAMERATE 60
 
 ofVec3f deskCenter;
@@ -93,7 +95,7 @@ void samsungMidiLights::setup() {
         int x = 0;
         int y = (i-1) / 4;// + (i-1) % 2;
         if (((i-1) / 2) % 2 == 1) {
-            x = 5;
+            x = 6;
 //            y--;
         }
         if ((i-1) % 2 == 1) {
@@ -164,7 +166,7 @@ void samsungMidiLights::setup() {
 //    launchPadMovies.push_back(new LPSineAnimation);
 
 #ifdef USE_DMX
-    dmx.connect("/dev/tty.usbserial-EN110089", dmxChannel); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
+    dmx.connect("/dev/tty.usbserial-EN110089", NUM_DMX_CHANNELS); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
 #endif
 
 
@@ -179,6 +181,19 @@ void samsungMidiLights::exit() {
     }
     midiIn.closePort();
     midiIn.removeListener(this);
+    
+    for (int i = 0; i < lights.size(); i++) {
+        Light *p = lights[i];
+        
+        if (p->type == NITRO) {
+            dmx.setLevel(p->dmxChannel + NITRO_MASTER_INTENSITY, 0);
+            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, 0);
+        }
+        else if (p->type == SHARPY) {
+            dmx.setLevel(p->dmxChannel + SHARPY_DIMMER, 0);
+        }
+    }
+    
     
 #ifdef USE_LAUNCHPAD
     lp1.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
@@ -223,7 +238,13 @@ void samsungMidiLights::update() {
         Light *p = lights[i];
         
         if (p->type == NITRO) {
-            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value);
+            dmx.setLevel(p->dmxChannel + NITRO_MASTER_INTENSITY, 255);
+            dmx.setLevel(p->dmxChannel + 12, 255);
+            dmx.setLevel(p->dmxChannel + 11, 255);
+            dmx.setLevel(p->dmxChannel + 2, 0);
+            dmx.setLevel(p->dmxChannel + 3, 0);
+            dmx.setLevel(p->dmxChannel + 4, 0);
+            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value*2);
             dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r);
             dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g);
             dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
@@ -234,21 +255,13 @@ void samsungMidiLights::update() {
             dmx.setLevel(p->dmxChannel + SHARPY_TILT, s->tilt + s->t);
             dmx.setLevel(p->dmxChannel + SHARPY_PAN, s->pan + s->p);
             dmx.setLevel(p->dmxChannel + SHARPY_STROBE, 255);
+            dmx.setLevel(p->dmxChannel + 16, 255);
         }
         
         
     }
 
     
-//    for (int i = 0; i < sharpys.size(); i++) {
-//        
-//        dmx.setLevel(i*SHARPY_STEP + SHARPY_STROBE, 255);
-//        dmx.setLevel(i*SHARPY_STEP + SHARPY_DIMMER, sharpys[i]->value * 0.5); //sharpys[i]->on * 255);
-//        dmx.setLevel(i*SHARPY_STEP + SHARPY_TILT, sharpys[i]->value);
-//        dmx.setLevel(i*SHARPY_STEP + SHARPY_ON, 255);
-//
-//        
-//    }
     
     dmx.update();
 
@@ -502,6 +515,12 @@ void samsungMidiLights::keyPressed(int key) {
 #endif
     else if (key == 'r') {
         resetView();
+    }
+    else if (key == 'z') {
+        for (int i = 0; i < lights.size(); i++) {
+            Light *p = lights[i];
+            p->value = 0;
+        }
     }
     
     if (showGui) {
