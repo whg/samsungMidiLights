@@ -19,6 +19,9 @@
 #define VIPER_INTENSITY 2
 #define VIPER_PAN 25
 #define VIPER_TILT 27
+#define VIPER_CYAN 4
+
+int midiNotes[] = { 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 58, 48, 49, 50, 51, 52, 53, 56, 57, 62, 63, 64, 59, 66, 74, 76, 34, 35 };
 
 
 #define NUM_DMX_CHANNELS 406
@@ -43,13 +46,24 @@ void samsungMidiLights::setup() {
     paramGroup.add(viperSpeed.set("viperSpeed", 1, 0, 5));
 
     panel.setup(paramGroup);
-    panel.setPosition(ofPoint(420, 550));
+    panel.setPosition(ofPoint(420, 650));
+    
+    lppg.setName("Launchpad animations");
+    stringstream ls;
+    for (int i = 0; i < 28; i++) {
+        ls.str("");
+        ls << "Note" << midiNotes[i];
+        lpparams[midiNotes[i]] = new ofParameter<int>(ls.str(), i % 10, 0, 10);
+        lppg.add(*lpparams[midiNotes[i]]);
+    }
+    launchPadPanel.setup(lppg);
     
     showGui = false;
     viperGui = false;
+    launchPadGui = false;
 //	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-    model.load("/Users/whg/Desktop/samsung Lights project/2015_03_28_FOR_SIMULATION_STRIPPED_edit2.obj");
+    model.load("/Users/whg/Desktop/samsung Lights project/2015_03_28_FOR_SIMULATION_STRIPPED_edit3.obj");
 
 //    vector<string> names = model.getGroupNames();
 //    for (int i = 0; i < names.size(); i++) cout << names[i] << endl;
@@ -225,6 +239,9 @@ void samsungMidiLights::exit() {
         }
     }
     
+    for(map<int, ofParameter<int>* >::iterator it = lpparams.begin(); it != lpparams.end(); ++it) {
+        delete it->second;
+    }
     
 #ifdef USE_LAUNCHPAD
     lp1.setAll(ofxLaunchpadColor::OFF_BRIGHTNESS_MODE);
@@ -300,6 +317,7 @@ void samsungMidiLights::update() {
 //            dmxViper.setLevel(p->dmxChannel + 2, 255);
             dmxViper.setLevel(p->dmxChannel + 21, 255); //zoom
             dmxViper.setLevel(p->dmxChannel + 12, 10); //zoom
+            dmxViper.setLevel(p->dmxChannel + VIPER_CYAN, s->col->b);
     
 
         }
@@ -466,6 +484,9 @@ void samsungMidiLights::draw() {
             if (lights[i]->type == VIPER) lights[i]->panel.draw();
         }
     }
+    if (launchPadGui) {
+        launchPadPanel.draw();
+    }
     
     
 
@@ -498,19 +519,30 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
 
     for (int i = 0; i < lights.size(); i++) {
         Light *p = lights[i];
-        if (msg.status == MIDI_CONTROL_CHANGE && msg.control == p->midiPitch) {
+        if (msg.status == MIDI_CONTROL_CHANGE &&
+            (msg.control == p->midiPitch ||
+             msg.control == p->nidiPitch ||
+             msg.control == p->yidiPitch)) {
+             
             p->value = msg.value;
+            
             if (msg.value < 1) {
                 p->on = false;
             }
-            else if (msg.value > 99){
+            else if (msg.value > 124){
                 p->on = true;
+                int v = *lpparams[msg.control];
+                if (v != 0) lptoplay.push_back(v-1);
+
             }
         }
-        else if (p->midiPitch == msg.pitch) {
+        else if (p->midiPitch == msg.pitch ||
+                 p->nidiPitch == msg.pitch ||
+                 p->yidiPitch == msg.pitch) {
+            
             if (msg.status == MIDI_NOTE_ON) {
                 p->on = true;
-                if (msg.pitch != 37) lptoplay.push_back(msg.pitch % 10);
+                
 
                             }
             else if (msg.status == MIDI_NOTE_OFF) {
@@ -551,16 +583,21 @@ void samsungMidiLights::keyPressed(int key) {
             break;
 	}
     
+    
     if (key == 's') {
         for (int i  = 0; i < lights.size(); i++) {
             lights[i]->panel.saveToFile("settings.xml");
         }
+        launchPadPanel.saveToFile("settings.xml");
+        panel.saveToFile("settings.xml");
         cout << "saved all settings" << endl;
     }
     if (key == 'l') {
         for (int i  = 0; i < lights.size(); i++) {
             lights[i]->panel.loadFromFile("settings.xml");
         }
+        launchPadPanel.loadFromFile("settings.xml");
+        panel.loadFromFile("settings.xml");
         cout << "loaded all settings" << endl;
     }
     else if (key == 'c') {
@@ -600,6 +637,9 @@ void samsungMidiLights::keyPressed(int key) {
     }
     else if (key == 'v') {
         viperGui = !viperGui;
+    }
+    else if (key == 'p') {
+        launchPadGui = !launchPadGui;
     }
     else if (key  == 'o') {
         dmx.setLevel(401, 255);

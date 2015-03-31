@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/samsungMidiLights.cpp"
-            timestampString = "449445248.97935"
+            timestampString = "449457423.903283"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "503"
-            endingLineNumber = "503"
+            startingLineNumber = "529"
+            endingLineNumber = "529"
             landmarkName = "samsungMidiLights::newMidiMessage(ofxMidiMessage&amp; msg)"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,12 +74,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/samsungMidiLights.cpp"
-            timestampString = "449442125.699683"
+            timestampString = "449457423.903283"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
+            startingLineNumber = "401"
+            endingLineNumber = "401"
             landmarkName = "samsungMidiLights::draw()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/samsungMidiLights.cpp"
+            timestampString = "449457423.903283"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "527"
+            endingLineNumber = "527"
+            landmarkName = "samsungMidiLights::newMidiMessage(ofxMidiMessage&amp; msg)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

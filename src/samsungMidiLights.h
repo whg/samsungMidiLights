@@ -25,6 +25,8 @@ struct Light {
     float value;
     ofVec2f pos;
     ofParameter<int> midiPitch;
+    ofParameter<int> nidiPitch;
+    ofParameter<int> yidiPitch;
     light_t type;
     
     ofxPanel panel;
@@ -44,6 +46,9 @@ struct Light {
             
             paramGroup.setName(s);
             paramGroup.add(midiPitch.set("midiPitch", p, 34, 78));
+            paramGroup.add(nidiPitch.set("nidiPitch", p, 34, 78));
+            paramGroup.add(yidiPitch.set("yidiPitch", p, 34, 78));
+            
             paramGroup.add(col.set("colour",100,ofColor(0,0),255));
             paramGroup.add(dmxChannel.set("dmxChannel", y*6+x+100, 0, 512));
             
@@ -69,13 +74,13 @@ struct Sharpy : public Light {
         panel.setPosition(pos * ofVec2f(panel.getWidth()+10, panel.getHeight()+10));
         t = p = 0;
         panel.loadFromFile("settings.xml");
-
+        
     }
 };
 
 class samsungMidiLights : public ofBaseApp, public ofxMidiListener {
 	
-    bool showGui, viperGui;
+    bool showGui, viperGui, launchPadGui;
     
     ofxDmx dmx, dmxViper;
     
@@ -119,6 +124,11 @@ public:
     ofParameter<int> viperTiltMax;
     ofParameter<int> viperPanMax;
     ofParameter<float> viperSpeed;
+    
+    ofxPanel launchPadPanel;
+    ofParameterGroup lppg;
+    map<int, ofParameter<int>* > lpparams;
+
 
     
     vector<ofAVFoundationPlayer*> launchPadMovies;
