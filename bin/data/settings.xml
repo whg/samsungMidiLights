@@ -94,7 +94,7 @@
 		<dmxChannel>200</dmxChannel>
 	<tilt>71</tilt>
 		<pan>139</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy1>
 <sharpy2>
@@ -112,7 +112,7 @@
 		<dmxChannel>232</dmxChannel>
 	<tilt>69</tilt>
 		<pan>117</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy3>
 <sharpy4>
@@ -130,7 +130,7 @@
 		<dmxChannel>264</dmxChannel>
 	<tilt>88</tilt>
 		<pan>149</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy5>
 <sharpy6>
@@ -148,7 +148,7 @@
 		<dmxChannel>296</dmxChannel>
 	<tilt>83</tilt>
 		<pan>110</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy7>
 <sharpy8>
@@ -166,7 +166,7 @@
 		<dmxChannel>328</dmxChannel>
 	<tilt>88</tilt>
 		<pan>156</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy9>
 <sharpy10>
@@ -184,7 +184,7 @@
 		<dmxChannel>360</dmxChannel>
 	<tilt>88</tilt>
 		<pan>98</pan>
-	<nidiPitch>41</nidiPitch>
+	<nidiPitch>66</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</sharpy11>
 <sharpy12>
@@ -203,63 +203,63 @@
 	</panel0>
 <panel1>
 		<midiPitch>45</midiPitch>
-		<colour>190, 255, 255, 255</colour>
+		<colour>0, 255, 255, 255</colour>
 		<dmxChannel>0</dmxChannel>
 	<nidiPitch>63</nidiPitch>
 		<yidiPitch>36</yidiPitch>
 	</panel1>
 <panel2>
 		<midiPitch>46</midiPitch>
-		<colour>0, 206, 255, 255</colour>
+		<colour>0, 255, 255, 255</colour>
 		<dmxChannel>12</dmxChannel>
 	<nidiPitch>64</nidiPitch>
-		<yidiPitch>37</yidiPitch>
+		<yidiPitch>56</yidiPitch>
 	</panel2>
 <panel3>
-		<midiPitch>58</midiPitch>
-		<colour>0, 206, 255, 255</colour>
+		<midiPitch>57</midiPitch>
+		<colour>0, 255, 255, 255</colour>
 		<dmxChannel>24</dmxChannel>
 	<nidiPitch>59</nidiPitch>
 		<yidiPitch>38</yidiPitch>
 	</panel3>
 <panel4>
 		<midiPitch>48</midiPitch>
-		<colour>190, 255, 255, 255</colour>
+		<colour>0, 255, 255, 255</colour>
 		<dmxChannel>36</dmxChannel>
 	<nidiPitch>66</nidiPitch>
 		<yidiPitch>39</yidiPitch>
 	</panel4>
 <panel5>
 		<midiPitch>41</midiPitch>
-		<colour>78, 213, 255, 255</colour>
+		<colour>46, 117, 255, 255</colour>
 		<dmxChannel>48</dmxChannel>
 	<nidiPitch>53</nidiPitch>
 		<yidiPitch>76</yidiPitch>
 	</panel5>
 <panel6>
 		<midiPitch>42</midiPitch>
-		<colour>0, 124, 255, 255</colour>
+		<colour>1, 105, 255, 255</colour>
 		<dmxChannel>60</dmxChannel>
-	<nidiPitch>56</nidiPitch>
-		<yidiPitch>34</yidiPitch>
+	<nidiPitch>58</nidiPitch>
+		<yidiPitch>66</yidiPitch>
 	</panel6>
 <panel7>
 		<midiPitch>43</midiPitch>
-		<colour>0, 124, 255, 255</colour>
+		<colour>0, 116, 255, 255</colour>
 		<dmxChannel>72</dmxChannel>
-	<nidiPitch>57</nidiPitch>
+	<nidiPitch>58</nidiPitch>
 		<yidiPitch>35</yidiPitch>
 	</panel7>
 <panel8>
 		<midiPitch>44</midiPitch>
-		<colour>76, 213, 255, 255</colour>
+		<colour>0, 111, 255, 255</colour>
 		<dmxChannel>84</dmxChannel>
 	<nidiPitch>62</nidiPitch>
 		<yidiPitch>43</yidiPitch>
 	</panel8>
 <panel9>
-		<midiPitch>37</midiPitch>
-		<colour>31, 90, 255, 255</colour>
+		<midiPitch>36</midiPitch>
+		<colour>0, 0, 255, 255</colour>
 		<dmxChannel>96</dmxChannel>
 	<nidiPitch>49</nidiPitch>
 		<yidiPitch>44</yidiPitch>
@@ -276,111 +276,112 @@
 		<colour>1, 0, 255, 255</colour>
 		<dmxChannel>120</dmxChannel>
 	<nidiPitch>51</nidiPitch>
-		<yidiPitch>46</yidiPitch>
+		<yidiPitch>37</yidiPitch>
 	</panel11>
 <panel12>
 		<midiPitch>40</midiPitch>
-		<colour>31, 90, 255, 255</colour>
+		<colour>0, 0, 255, 255</colour>
 		<dmxChannel>132</dmxChannel>
 	<nidiPitch>52</nidiPitch>
 		<yidiPitch>47</yidiPitch>
 	</panel12>
 <group/>
 <settings...>
-		<sharpyTiltMax>59</sharpyTiltMax>
-		<sharpyPanMax>10</sharpyPanMax>
-	<viperTiltMax>2</viperTiltMax>
-		<viperPanMax>2</viperPanMax>
-		<viperSpeed>1</viperSpeed>
+		<sharpyTiltMax>8</sharpyTiltMax>
+		<sharpyPanMax>7</sharpyPanMax>
+	<viperTiltMax>7</viperTiltMax>
+		<viperPanMax>3</viperPanMax>
+		<viperSpeed>0.035</viperSpeed>
+	<viperSpace>3.85</viperSpace>
 	</settings...>
 <viper1>
-		<midiPitch>41</midiPitch>
+		<midiPitch>34</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>0</dmxChannel>
-		<tilt>8</tilt>
-		<pan>130</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>15</tilt>
+		<pan>134</pan>
+	<nidiPitch>76</nidiPitch>
+		<yidiPitch>76</yidiPitch>
 	</viper1>
 <viper2>
-		<midiPitch>41</midiPitch>
+		<midiPitch>78</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>34</dmxChannel>
-		<tilt>6</tilt>
-		<pan>136</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>18</tilt>
+		<pan>144</pan>
+	<nidiPitch>78</nidiPitch>
+		<yidiPitch>78</yidiPitch>
 	</viper2>
 <viper3>
-		<midiPitch>41</midiPitch>
+		<midiPitch>78</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>68</dmxChannel>
-		<tilt>3</tilt>
-		<pan>136</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>11</tilt>
+		<pan>144</pan>
+	<nidiPitch>77</nidiPitch>
+		<yidiPitch>78</yidiPitch>
 	</viper3>
 <viper4>
-		<midiPitch>41</midiPitch>
+		<midiPitch>78</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>102</dmxChannel>
-		<tilt>8</tilt>
-		<pan>119</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>15</tilt>
+		<pan>110</pan>
+	<nidiPitch>78</nidiPitch>
+		<yidiPitch>78</yidiPitch>
 	</viper4>
 <viper5>
-		<midiPitch>41</midiPitch>
+		<midiPitch>78</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>136</dmxChannel>
-		<tilt>8</tilt>
-		<pan>120</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>15</tilt>
+		<pan>108</pan>
+	<nidiPitch>78</nidiPitch>
+		<yidiPitch>78</yidiPitch>
 	</viper5>
 <viper6>
-		<midiPitch>41</midiPitch>
+		<midiPitch>34</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>170</dmxChannel>
-		<tilt>10</tilt>
-		<pan>127</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>17</tilt>
+		<pan>120</pan>
+	<nidiPitch>78</nidiPitch>
+		<yidiPitch>78</yidiPitch>
 	</viper6>
 <viper7>
-		<midiPitch>41</midiPitch>
+		<midiPitch>46</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>204</dmxChannel>
-		<tilt>18</tilt>
-		<pan>132</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>28</tilt>
+		<pan>137</pan>
+	<nidiPitch>58</nidiPitch>
+		<yidiPitch>58</yidiPitch>
 	</viper7>
 <viper8>
-		<midiPitch>41</midiPitch>
+		<midiPitch>46</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>238</dmxChannel>
-		<tilt>15</tilt>
-		<pan>136</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<tilt>20</tilt>
+		<pan>147</pan>
+	<nidiPitch>52</nidiPitch>
+		<yidiPitch>54</yidiPitch>
 	</viper8>
 <viper9>
-		<midiPitch>41</midiPitch>
+		<midiPitch>48</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>272</dmxChannel>
 		<tilt>15</tilt>
-		<pan>122</pan>
-	<nidiPitch>41</nidiPitch>
-		<yidiPitch>41</yidiPitch>
+		<pan>112</pan>
+	<nidiPitch>44</nidiPitch>
+		<yidiPitch>46</yidiPitch>
 	</viper9>
 <viper10>
-		<midiPitch>41</midiPitch>
+		<midiPitch>34</midiPitch>
 		<colour>100, 100, 100, 255</colour>
 		<dmxChannel>306</dmxChannel>
-		<tilt>22</tilt>
-		<pan>113</pan>
-	<nidiPitch>41</nidiPitch>
+		<tilt>30</tilt>
+		<pan>100</pan>
+	<nidiPitch>52</nidiPitch>
 		<yidiPitch>41</yidiPitch>
 	</viper10>
 <Launchpad_animations>
@@ -394,7 +395,7 @@
 		<Note44>7</Note44>
 		<Note45>8</Note45>
 		<Note46>9</Note46>
-		<Note58>6</Note58>
+		<Note58>0</Note58>
 		<Note48>1</Note48>
 		<Note49>2</Note49>
 		<Note50>3</Note50>
@@ -403,14 +404,38 @@
 		<Note53>6</Note53>
 		<Note56>7</Note56>
 		<Note57>8</Note57>
-		<Note62>0</Note62>
-		<Note63>4</Note63>
-		<Note64>6</Note64>
+		<Note62>9</Note62>
+		<Note63>0</Note63>
+		<Note64>1</Note64>
 		<Note59>2</Note59>
 		<Note66>3</Note66>
 		<Note74>4</Note74>
 		<Note76>5</Note76>
 		<Note34>6</Note34>
 		<Note35>7</Note35>
+	<Note47>8</Note47>
 	</Launchpad_animations>
+<viper11>
+		<midiPitch>44</midiPitch>
+		<nidiPitch>44</nidiPitch>
+		<yidiPitch>41</yidiPitch>
+		<colour>100, 100, 100, 255</colour>
+		<dmxChannel>340</dmxChannel>
+		<tilt>30</tilt>
+		<pan>10</pan>
+	</viper11>
+<strobe1>
+		<midiPitch>36</midiPitch>
+		<nidiPitch>62</nidiPitch>
+		<yidiPitch>64</yidiPitch>
+		<colour>100, 100, 100, 255</colour>
+		<dmxChannel>401</dmxChannel>
+	</strobe1>
+<strobe2>
+		<midiPitch>36</midiPitch>
+		<nidiPitch>63</nidiPitch>
+		<yidiPitch>36</yidiPitch>
+		<colour>100, 100, 100, 255</colour>
+		<dmxChannel>402</dmxChannel>
+	</strobe2>
 </panel36>

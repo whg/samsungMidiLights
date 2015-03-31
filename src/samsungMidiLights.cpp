@@ -21,14 +21,21 @@
 #define VIPER_TILT 27
 #define VIPER_CYAN 4
 
-int midiNotes[] = { 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 58, 48, 49, 50, 51, 52, 53, 56, 57, 62, 63, 64, 59, 66, 74, 76, 34, 35 };
+#define OPTIMISE _DRAW 1
+
+Light *strobe1;
+Light *strobe2;
+
+int lastReceived = 0;
+int midiNotes[] = { 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 58, 48, 49, 50, 51, 52, 53, 56, 57, 62, 63, 64, 59, 66, 74, 76, 34, 35, 47 };
 
 
 #define NUM_DMX_CHANNELS 406
 #define FRAMERATE 30
+#define LAUNCHPAD_FRAMERATE 30
 
 ofVec3f deskCenter;
-float stheta = 0;
+float stheta = 0, vtheta = 0;
 vector<int> lptoplay;
 //--------------------------------------------------------------
 void samsungMidiLights::setup() {
@@ -43,14 +50,16 @@ void samsungMidiLights::setup() {
     paramGroup.add(sharpyPanMax.set("sharpyPanMax", 10, 0, 100));
     paramGroup.add(viperTiltMax.set("viperTiltMax", 2, 0, 20));
     paramGroup.add(viperPanMax.set("viperPanMax", 2, 0, 20));
-    paramGroup.add(viperSpeed.set("viperSpeed", 1, 0, 5));
+    paramGroup.add(viperSpeed.set("viperSpeed", 1, 0, 1));
+    paramGroup.add(viperSpace.set("viperSpace", 1, 0, 10));
 
     panel.setup(paramGroup);
-    panel.setPosition(ofPoint(420, 650));
+    panel.setPosition(ofPoint(500, 620));
+    panel.loadFromFile("settings.xml");
     
     lppg.setName("Launchpad animations");
     stringstream ls;
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 29; i++) {
         ls.str("");
         ls << "Note" << midiNotes[i];
         lpparams[midiNotes[i]] = new ofParameter<int>(ls.str(), i % 10, 0, 10);
@@ -103,14 +112,6 @@ void samsungMidiLights::setup() {
         }
     }
     
-
-//    for (int i = 1, k = 0; i <= 6; i++) {
-//        for (int j = 1; j <= 2; j++, k++) {
-//            ss.str("");
-//            ss << "sharpy" << i << "_" << j;
-//            //            sharpys.push_back(new Sharpy(ss.str(), 60 + k, i, j));
-//        }
-//    }
     
     dmxChannel = 200;
     for (int i = 1; i <= 12; i++) {
@@ -134,7 +135,7 @@ void samsungMidiLights::setup() {
     }
     
     dmxChannel = 0;
-    for (int i = 1; i <= 10; i++) {
+    for (int i = 1; i <= 11; i++) {
         ss.str("");
         ss << "viper" << i;
         int x = (i-1) % 6;
@@ -150,33 +151,22 @@ void samsungMidiLights::setup() {
         lights.push_back(l);
         
     }
-
     
+    strobe1 = new Light("strobe1", 36, true, 2, 4);
+    strobe1->dmxChannel = 401;
+    strobe1->type = STROBE;
+    lights.push_back(strobe1);
+
+//    strobe1->type = STROBE;
+    strobe2 = new Light("strobe2", 36, true, 3, 4);
+    strobe2->dmxChannel = 402;
+    strobe2->type = STROBE;
+    lights.push_back(strobe2);
+    //    strobe2->type = STROBE;
     
-//    for (int i = 0; i < lights.size(); i++) cout << lights[i]->name <<": " << lights[i]->midiPitch <<endl;
-//    ofExit();
-
+    strobe1->panel.setPosition(ofVec2f(200, 500));
+    strobe2->panel.setPosition(ofVec2f(400, 500));
     
-//    for (int i = 0; i < 16; i++) {
-//        ofPixels *p = new ofPixels();
-//        p->allocate(8, 8, 3);
-//        ofColor c;
-//        for (int j = 0; j < 8; j++) {
-//            for (int k = 0; k < 8; k++) {
-//                float r = ofRandom(5);
-//                if (r > 4) c = ofColor::red;
-//                else if (r > 3) c = ofColor::yellow;
-//                else if (r > 2) c = ofColor::green;
-//                else c = ofColor::black;
-//                p->setColor(j, k, c);
-//            }
-//        }
-//        pixelPerms.push_back(p);
-//    }
-    
-
-
-
     cam.setupPerspective();
     float f = cam.getFarClip();
     float n = cam.getNearClip();
@@ -188,30 +178,10 @@ void samsungMidiLights::setup() {
     lpe = new LaunchPadEnvironment();
 #endif
 
-//    for (int i = 0; i < 48; i++) {
-//        ss.str("");
-////        ss << "0" << (i+1) << ".mov";
-//        ss << setfill('0') << setw(2) << (i+1) << ".mov";
-//        cout << ss.str() << endl;
-//        
-//        ofFile file(ss.str());
-//        if (!file.exists()) {
-//            continue;
-//        }
-//        
-//        ofAVFoundationPlayer *player = new ofAVFoundationPlayer();
-//        player->load(ss.str());
-//        player->play();
-//        player->setLoopState(OF_LOOP_NORMAL);
-//        launchPadMovies.push_back(player);
-//    }
-
-//    launchPadMovies.push_back(new LPCircularAnimation);
-//    launchPadMovies.push_back(new LPSineAnimation);
 
 #ifdef USE_DMX
     dmx.connect("/dev/tty.usbserial-EN110089", NUM_DMX_CHANNELS); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
-    dmxViper.connect("/dev/tty.usbserial-EN128343", 34*10);
+    dmxViper.connect("/dev/tty.usbserial-EN128343", 34*11);
 #endif
 
 
@@ -262,16 +232,17 @@ void samsungMidiLights::exit() {
 int pc = 0;
 //--------------------------------------------------------------
 void samsungMidiLights::update() {
-    
-//    static int pc = 0;
 
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
     //add the launch pad animation
     for (int i = 0; i < lptoplay.size(); i++) {
         lpe->add(animationCreator(lptoplay[i]));
     }
     lptoplay.clear();
     
-    if (true || ofGetFrameNum() % (FRAMERATE / 12) == 0) {
+    if (pc >= FRAMERATE) {
+        pc = 0;
 #ifdef USE_LAUNCHPAD
         ofPixels pix(lpe->getPixels());
         lp1.set(pix);
@@ -279,6 +250,8 @@ void samsungMidiLights::update() {
         lp2.set(pix);
 #endif
     }
+    
+    pc+= LAUNCHPAD_FRAMERATE;
     
 #ifdef USE_DMX
     
@@ -293,9 +266,9 @@ void samsungMidiLights::update() {
             dmx.setLevel(p->dmxChannel + 3, 0);
             dmx.setLevel(p->dmxChannel + 4, 0);
             dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value*2);
-            dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r);
-            dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g);
-            dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b);
+            dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r*2);
+            dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g*2);
+            dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b*2);
         }
         else if (p->type == SHARPY) {
             Sharpy *s = (Sharpy*) p;
@@ -309,9 +282,9 @@ void samsungMidiLights::update() {
 
             Sharpy *s = (Sharpy*) p;
 
-            dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, 255); //p->value);
-            dmxViper.setLevel(p->dmxChannel + VIPER_TILT, ofClamp(s->tilt + int(s->t), 0, 255));
-            dmxViper.setLevel(p->dmxChannel + VIPER_PAN, ofClamp(s->pan + int(s->p), 0, 255));
+            dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, p->value);
+            dmxViper.setLevel(p->dmxChannel + VIPER_TILT, ofClamp(s->tilt + s->t, 0, 255));
+            dmxViper.setLevel(p->dmxChannel + VIPER_PAN, ofClamp(s->pan + s->p, 0, 255));
 //            cout << int(s->p) << endl;
             dmxViper.setLevel(p->dmxChannel + 1, 25); //shutter
 //            dmxViper.setLevel(p->dmxChannel + 2, 255);
@@ -325,7 +298,15 @@ void samsungMidiLights::update() {
         
     }
 
-    
+    dmx.setLevel(strobe1->dmxChannel, strobe1->value > 0 ? 255 : 0);
+    dmx.setLevel(strobe2->dmxChannel, strobe2->value > 0 ? 255 : 0);
+
+    if (strobe2->value > 255) {
+        strobe2->value = 0;
+    }
+    if (strobe1->value > 255) {
+        strobe1->value = 0;
+    }
     
     dmx.update();
     dmxViper.update();
@@ -370,7 +351,11 @@ void samsungMidiLights::draw() {
             float intensity = ofMap(lights[i]->value, 0, 127, 0, 255);
             ofSetColor(lights[i]->col->r, lights[i]->col->g, lights[i]->col->b, intensity);
             ofFill();
+#ifdef OPTIMISE_DRAW
+            g->drawMesh(lights[i]->on);
+#else
             g->draw(lights[i]->on);
+#endif
         }
 //        else ofSetHexColor(0xffffff);
 
@@ -420,49 +405,25 @@ void samsungMidiLights::draw() {
     
     for (int i = 0; i < lights.size(); i++) {
         if (lights[i]->type == VIPER) {
-            float zr = sin(stheta +sharpyc*1.2);
+            float zr = sin(vtheta +viperSpace*1.2*i);
             
             Sharpy *s = (Sharpy*) lights[i];
             s->t = zr * viperTiltMax;
-            float xr = sin(stheta +sharpyc*2.5);
+            float xr = sin(vtheta +viperSpace*2.5*i);
             s->p = xr * viperPanMax;
 
 
         }
     }
-    
+    vtheta+= viperSpeed;
     stheta+= 0.05;
+    
 
 //    cout << rotX << ", " << rotY << endl;
 
     ofPushStyle();
     ofSetLineWidth(5);
 
-//    for (int i = 0; i < sharpys.size(); i++) {
-//        g = model.getGroup(sharpys[i]->name);
-//        if (g == NULL) {
-//            continue;
-//        }
-//        if (sharpys[i]->on  || true) {
-////            ofSetColor(sharpys[i]->value*2);
-//            ofFill();
-//            
-//            ofPushMatrix();
-//            
-//            int n = g->faces.size() - 1;
-//            ofTranslate((g->faces[n].vertices[0]));
-//            float rot = ofMap(sharpys[i]->value, 0, 127, -180, -100);
-//            ofRotateX(rot * (((i/2) % 2 == 1) ? -1 : 1));
-//            
-//            ofSetLineWidth(5);
-//            ofDrawLine(0, 0, 0, 2500);
-//            
-//            ofPopMatrix();
-//            
-//        }
-//        
-//        
-//    }
 
     
     ofPopMatrix();
@@ -475,13 +436,15 @@ void samsungMidiLights::draw() {
    
     if (showGui) {
         for (int i = 0; i < lights.size(); i++) {
-            if (lights[i]->type != VIPER) lights[i]->panel.draw();
+            if (lights[i]->type == SHARPY || lights[i]->type == NITRO) lights[i]->panel.draw();
         }
         panel.draw();
     }
     if (viperGui) {
         for (int i = 0; i < lights.size(); i++) {
-            if (lights[i]->type == VIPER) lights[i]->panel.draw();
+            if (lights[i]->type == VIPER || lights[i]->type == STROBE) {
+                lights[i]->panel.draw();
+            }
         }
     }
     if (launchPadGui) {
@@ -489,6 +452,8 @@ void samsungMidiLights::draw() {
     }
     
     
+    ofSetColor(255);
+    ofDrawBitmapString(ofToString(lastReceived), 0, 800);
 
 }
 
@@ -497,24 +462,24 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
 
 	// make a copy of the latest message
 	midiMessage = msg;
-    stringstream ss;
-//    ss << "(" << msg.status << ")" << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
+//    stringstream ss;
+////    ss << "(" << msg.status << ")" << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
+////    cout << ss.str() << endl;
+//    
+//    if (msg.status == MIDI_NOTE_ON) {
+//        ss << "(NOTE_ON) " << msg.pitch << ": " << msg.velocity;
+//
+//    }
+//    if (msg.status == MIDI_NOTE_OFF) {
+//        ss << "(NOTE_OFF) "<< msg.pitch << ": " << msg.velocity;
+//        
+//    }
+//    else if (msg.status == MIDI_CONTROL_CHANGE) {
+//        ss << "(CONTROL) " << msg.control << ": " << msg.value;
+//    }
+//    
+////    ss << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
 //    cout << ss.str() << endl;
-    
-    if (msg.status == MIDI_NOTE_ON) {
-        ss << "(NOTE_ON) " << msg.pitch << ": " << msg.velocity;
-
-    }
-    if (msg.status == MIDI_NOTE_OFF) {
-        ss << "(NOTE_OFF) "<< msg.pitch << ": " << msg.velocity;
-        
-    }
-    else if (msg.status == MIDI_CONTROL_CHANGE) {
-        ss << "(CONTROL) " << msg.control << ": " << msg.value;
-    }
-    
-//    ss << msg.channel << ": " << msg.value << "," << msg.pitch << "," << msg.velocity << "," << msg.control;
-    cout << ss.str() << endl;
 //
 
     for (int i = 0; i < lights.size(); i++) {
@@ -531,6 +496,7 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
             }
             else if (msg.value > 124){
                 p->on = true;
+                lastReceived = msg.control;
                 int v = *lpparams[msg.control];
                 if (v != 0) lptoplay.push_back(v-1);
 
@@ -542,8 +508,8 @@ void samsungMidiLights::newMidiMessage(ofxMidiMessage& msg) {
             
             if (msg.status == MIDI_NOTE_ON) {
                 p->on = true;
-                
-
+                p->value = 128;
+                lastReceived = msg.pitch;
                             }
             else if (msg.status == MIDI_NOTE_OFF) {
                 p->on = false;
@@ -644,9 +610,11 @@ void samsungMidiLights::keyPressed(int key) {
     else if (key  == 'o') {
         dmx.setLevel(401, 255);
         dmx.setLevel(402, 255);
-        dmx.setLevel(403, 255);
-        dmx.setLevel(404, 255);
         dmx.update();
+        dmx.setLevel(401, 0);
+        dmx.setLevel(402, 0);
+        dmx.update();
+        
         cout << "flash" << endl;
     }
     

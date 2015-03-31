@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/samsungMidiLights.cpp"
-            timestampString = "449457423.903283"
+            timestampString = "449495195.399356"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "529"
-            endingLineNumber = "529"
+            startingLineNumber = "494"
+            endingLineNumber = "494"
             landmarkName = "samsungMidiLights::newMidiMessage(ofxMidiMessage&amp; msg)"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/samsungMidiLights.cpp"
-            timestampString = "449457423.903283"
+            timestampString = "449495195.399356"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
+            startingLineNumber = "386"
+            endingLineNumber = "386"
             landmarkName = "samsungMidiLights::draw()"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/samsungMidiLights.cpp"
-            timestampString = "449457423.903283"
+            timestampString = "449495195.399356"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "527"
-            endingLineNumber = "527"
+            startingLineNumber = "492"
+            endingLineNumber = "492"
             landmarkName = "samsungMidiLights::newMidiMessage(ofxMidiMessage&amp; msg)"
             landmarkType = "5">
          </BreakpointContent>

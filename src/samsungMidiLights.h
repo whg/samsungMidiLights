@@ -8,7 +8,7 @@
 
 #include "LaunchPad.h"
 
-//#define USE_DMX
+#define USE_DMX
 #define DRAW_MODEL
 #define USE_LAUNCHPAD
 
@@ -17,6 +17,7 @@ typedef enum {
     NITRO,
     SHARPY,
     VIPER,
+    STROBE,
 } light_t;
 
 struct Light {
@@ -124,6 +125,7 @@ public:
     ofParameter<int> viperTiltMax;
     ofParameter<int> viperPanMax;
     ofParameter<float> viperSpeed;
+    ofParameter<float> viperSpace;
     
     ofxPanel launchPadPanel;
     ofParameterGroup lppg;
