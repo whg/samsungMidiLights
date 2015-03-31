@@ -127,6 +127,14 @@ public:
     ofParameter<float> viperSpeed;
     ofParameter<float> viperSpace;
     
+    
+    ofParameter<int> messageGobo;
+    ofParameter<int> clapperGobo;
+    ofParameter<int> musicGobo;
+    ofParameter<int> gameGobo;
+    ofParameter<int> lgobo;
+    ofParameter<int> lgoboz;
+    
     ofxPanel launchPadPanel;
     ofParameterGroup lppg;
     map<int, ofParameter<int>* > lpparams;

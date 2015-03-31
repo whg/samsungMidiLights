@@ -21,10 +21,14 @@
 #define VIPER_TILT 27
 #define VIPER_CYAN 4
 
+#define LASER_DMX 474
+
 #define OPTIMISE _DRAW 1
 
 Light *strobe1;
 Light *strobe2;
+
+bool useG = true;
 
 int lastReceived = 0;
 int midiNotes[] = { 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 58, 48, 49, 50, 51, 52, 53, 56, 57, 62, 63, 64, 59, 66, 74, 76, 34, 35, 47 };
@@ -34,6 +38,7 @@ int midiNotes[] = { 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 58, 48, 49, 50, 51, 
 #define FRAMERATE 30
 #define LAUNCHPAD_FRAMERATE 30
 
+bool allOn = false;
 ofVec3f deskCenter;
 float stheta = 0, vtheta = 0;
 vector<int> lptoplay;
@@ -52,9 +57,17 @@ void samsungMidiLights::setup() {
     paramGroup.add(viperPanMax.set("viperPanMax", 2, 0, 20));
     paramGroup.add(viperSpeed.set("viperSpeed", 1, 0, 1));
     paramGroup.add(viperSpace.set("viperSpace", 1, 0, 10));
+    
+    paramGroup.add(gameGobo.set("gameGobo", 1, 0, 255));
+    paramGroup.add(messageGobo.set("messageGobo", 1, 0, 255));
+    paramGroup.add(clapperGobo.set("clapperGobo", 1, 0, 255));
+    paramGroup.add(musicGobo.set("musicGobo", 1, 0, 255));
+    paramGroup.add(lgobo.set("lastgobo", 1, 0, 255));
+    paramGroup.add(lgoboz.set("lastgoboz", 1, 0, 255));
+
 
     panel.setup(paramGroup);
-    panel.setPosition(ofPoint(500, 620));
+    panel.setPosition(ofPoint(500, 550));
     panel.loadFromFile("settings.xml");
     
     lppg.setName("Launchpad animations");
@@ -181,7 +194,7 @@ void samsungMidiLights::setup() {
 
 #ifdef USE_DMX
     dmx.connect("/dev/tty.usbserial-EN110089", NUM_DMX_CHANNELS); //sharpys.size() * SHARPY_STEP + lights.size() * LIGHT_STEP);
-    dmxViper.connect("/dev/tty.usbserial-EN128343", 34*11);
+    dmxViper.connect("/dev/tty.usbserial-EN128343", 500);
 #endif
 
 
@@ -255,6 +268,9 @@ void samsungMidiLights::update() {
     
 #ifdef USE_DMX
     
+    
+    
+    
     for (int i = 0; i < lights.size(); i++) {
         Light *p = lights[i];
         
@@ -265,7 +281,10 @@ void samsungMidiLights::update() {
             dmx.setLevel(p->dmxChannel + 2, 0);
             dmx.setLevel(p->dmxChannel + 3, 0);
             dmx.setLevel(p->dmxChannel + 4, 0);
-            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, p->value*2);
+//            if (i < 4) dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, 255); //p->value*2);
+//            else dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, 0); //p->value*2);
+            dmx.setLevel(p->dmxChannel + NITRO_INTENSITY, allOn ? 255 : p->value*2);
+
             dmx.setLevel(p->dmxChannel + NITRO_RED, p->col->r*2);
             dmx.setLevel(p->dmxChannel + NITRO_BLUE, p->col->g*2);
             dmx.setLevel(p->dmxChannel + NITRO_GREEN, p->col->b*2);
@@ -280,6 +299,21 @@ void samsungMidiLights::update() {
         }
         else if (p->type == VIPER) {
 
+            if(useG) {
+            if (p->name == "viper1" || p->name == "viper6" || p->name == "viper9" || p->name == "viper8") {
+                p->value = musicGobo;
+            }
+            if (p->name == "viper2" || p->name == "viper5") {
+                p->value = clapperGobo;
+            }
+            if (p->name == "viper3" || p->name == "viper4") {
+                p->value = messageGobo;
+            }
+            if (p->name == "viper7" || p->name == "viper10") {
+                p->value = gameGobo;
+            }
+            }
+            
             Sharpy *s = (Sharpy*) p;
 
             dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, p->value);
@@ -289,9 +323,18 @@ void samsungMidiLights::update() {
             dmxViper.setLevel(p->dmxChannel + 1, 25); //shutter
 //            dmxViper.setLevel(p->dmxChannel + 2, 255);
             dmxViper.setLevel(p->dmxChannel + 21, 255); //zoom
-            dmxViper.setLevel(p->dmxChannel + 12, 10); //zoom
+            dmxViper.setLevel(p->dmxChannel + 12, 37); //gobo
+            dmxViper.setLevel(p->dmxChannel + 13, 100); //gobo
             dmxViper.setLevel(p->dmxChannel + VIPER_CYAN, s->col->b);
     
+            if (i == lights.size() -3) {
+                dmxViper.setLevel(p->dmxChannel + VIPER_INTENSITY, lgobo);
+                dmxViper.setLevel(p->dmxChannel + VIPER_TILT, ofClamp(s->tilt, 0, 255));
+                dmxViper.setLevel(p->dmxChannel + VIPER_PAN, ofClamp(s->pan, 0, 255));
+                dmxViper.setLevel(p->dmxChannel + 12, 0);
+                dmxViper.setLevel(p->dmxChannel + 13, 0);
+                dmxViper.setLevel(p->dmxChannel + 21, lgoboz);
+            }
 
         }
         
@@ -301,6 +344,14 @@ void samsungMidiLights::update() {
     dmx.setLevel(strobe1->dmxChannel, strobe1->value > 0 ? 255 : 0);
     dmx.setLevel(strobe2->dmxChannel, strobe2->value > 0 ? 255 : 0);
 
+
+    dmxViper.setLevel(LASER_DMX + 1, 33);
+    dmxViper.setLevel(LASER_DMX + 2, 0);
+    dmxViper.setLevel(LASER_DMX + 3, 3);
+    dmxViper.setLevel(LASER_DMX + 4, 128);
+    dmxViper.setLevel(LASER_DMX + 5, 255);
+    
+    
     if (strobe2->value > 255) {
         strobe2->value = 0;
     }
@@ -588,10 +639,13 @@ void samsungMidiLights::keyPressed(int key) {
     else if (key == OF_KEY_LEFT) {
         lpe->add(new LPClockLine);
     }
-    else if (key >= '0' && key <= '9') {
-        lpe->add(animationCreator(key - '0'));
-    }
+//    else if (key >= '0' && key <= '9') {
+//        lpe->add(animationCreator(key - '0'));
+//    }
 #endif
+    else if (key == 'a') {
+        allOn = !allOn;
+    }
     else if (key == 'r') {
         resetView();
     }
@@ -616,6 +670,9 @@ void samsungMidiLights::keyPressed(int key) {
         dmx.update();
         
         cout << "flash" << endl;
+    }
+    if (key == 'g') {
+        useG = !useG;
     }
     
     if (showGui) {

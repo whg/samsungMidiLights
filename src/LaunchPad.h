@@ -329,7 +329,7 @@ LaunchPadAnimation animations[] = {
 };
 
 inline LaunchPadAnimation* animationCreator(int v) {
-    cout << "getting animtion " << v << endl;
+//    cout << "getting animtion " << v << endl;
     switch(v) {
         case 0:
             return new LPChevron;
